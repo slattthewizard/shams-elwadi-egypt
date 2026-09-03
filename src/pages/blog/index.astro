@@ -1,0 +1,119 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const collectionPosts = await getCollection('blog');
+const posts = collectionPosts
+  .map(post => ({
+    slug: post.slug,
+    title: post.data.title,
+    desc: post.data.metaDescription,
+    date: post.data.publishedDate,
+    tag: post.data.tag,
+  }))
+  .sort((a, b) => b.date.localeCompare(a.date));
+---
+
+<Layout
+  title="مقالات ودلائل الطاقة الشمسية | شمس الوادي للطاقة الشمسية"
+  description="مقالات عملية عن أسعار الطاقة الشمسية في مصر وصافي القياس والأنظمة الهجينة والري الشمسي لأصحاب المنازل والمزارع والمصانع والفنادق."
+  canonical="https://shamselwadi.com/blog/"
+>
+<style>
+  .blog-hero {
+    background: linear-gradient(135deg, #08344B 0%, #0E4D6E 60%, #16648C 100%);
+    padding: 72px 24px 56px;
+    text-align: center;
+    color: #F6F3ED;
+  }
+  .blog-hero h1 {
+    font-family: 'Zilla Slab', Georgia, serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    margin: 0 0 12px;
+    letter-spacing: -0.02em;
+    color: #F6F3ED;
+  }
+  .blog-hero p {
+    font-size: 1.05rem;
+    opacity: 0.85;
+    margin: 0 auto;
+    max-width: 520px;
+    line-height: 1.6;
+  }
+  .blog-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 56px 24px 80px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 28px;
+  }
+  .blog-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e3ded4;
+    padding: 28px 24px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 2px 8px rgba(14,77,110,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .blog-card:hover {
+    box-shadow: 0 8px 28px rgba(14,77,110,0.14), 0 2px 6px rgba(0,0,0,0.06);
+    transform: translateY(-3px);
+  }
+  .blog-card:focus-visible { outline: 2px solid #0E4D6E; outline-offset: 3px; }
+  .blog-card .tag {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #B96A2C; margin-bottom: 10px;
+  }
+  .blog-card h2 {
+    font-family: 'Zilla Slab', Georgia, serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #0E4D6E;
+    margin: 0 0 10px;
+    line-height: 1.35;
+  }
+  .blog-card p {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.65;
+    margin: 0 0 20px;
+    flex: 1;
+  }
+  .blog-card .read-more {
+    font-size: 13px; font-weight: 600; color: #0E4D6E;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+</style>
+
+<Fragment slot="head">
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "مقالات ودلائل الطاقة الشمسية",
+    "description": "مقالات عملية عن أسعار الطاقة الشمسية في مصر وصافي القياس والأنظمة الهجينة والري الشمسي لأصحاب المنازل والمزارع والمصانع والفنادق.",
+    "url": "https://shamselwadi.com/blog/"
+  })} />
+</Fragment>
+
+<section class="blog-hero">
+  <h1>مقالات ودلائل الطاقة الشمسية</h1>
+  <p>مقالات عملية عن الأسعار واللوائح والأنظمة الهجينة والري بالطاقة الشمسية من فريق شمس الوادي الهندسي.</p>
+</section>
+
+<div class="blog-grid">
+  {posts.map(post => (
+    <a href={`/blog/${post.slug}/`} class="blog-card">
+      {post.tag && <span class="tag">{post.tag}</span>}
+      <h2>{post.title}</h2>
+      <p>{post.desc}</p>
+      <span class="read-more">اقرأ المقال ←</span>
+    </a>
+  ))}
+</div>
+</Layout>

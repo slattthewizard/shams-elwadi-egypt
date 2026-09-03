@@ -1,0 +1,215 @@
+---
+import fs from 'node:fs';
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map(post => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+
+const canonical = post.data.canonical ?? `https://shamselwadi.com/blog/${post.slug}/`;
+const heroImg = fs.existsSync(`public/images/blog/${post.slug}.webp`)
+  ? `/images/blog/${post.slug}.webp`
+  : null;
+const ogImage = post.data.ogImage
+  ?? (heroImg ? `https://shamselwadi.com${heroImg}` : 'https://shamselwadi.com/images/og-image.webp');
+const title = post.data.metaTitle ?? post.data.title;
+const navTitle = post.data.navTitle ?? post.data.title;
+const faq = post.data.faq ?? [];
+
+const breadcrumbSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "https://shamselwadi.com/" },
+    { "@type": "ListItem", "position": 2, "name": "المقالات", "item": "https://shamselwadi.com/blog/" },
+    { "@type": "ListItem", "position": 3, "name": post.data.title, "item": canonical }
+  ]
+});
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": post.data.title,
+  "description": post.data.metaDescription,
+  "image": ogImage,
+  "url": canonical,
+  "mainEntityOfPage": { "@type": "WebPage", "@id": canonical },
+  "datePublished": post.data.publishedDate,
+  "dateModified": post.data.updatedDate ?? post.data.publishedDate,
+  "author": { "@type": "Organization", "name": "شمس الوادي للطاقة الشمسية", "url": "https://shamselwadi.com/about/" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "شمس الوادي للطاقة الشمسية",
+    "url": "https://shamselwadi.com",
+    "logo": { "@type": "ImageObject", "url": "https://shamselwadi.com/images/og-image.webp" }
+  }
+});
+
+const dateDisplay = new Date(post.data.publishedDate + 'T12:00:00Z').toLocaleDateString('ar-u-nu-latn', { year: 'numeric', month: 'long', day: 'numeric' });
+
+const faqSchema = faq.length > 0 ? JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faq.map(item => ({
+    "@type": "Question",
+    "name": item.question,
+    "acceptedAnswer": { "@type": "Answer", "text": item.answer }
+  }))
+}) : null;
+---
+
+<Layout
+  title={title}
+  description={post.data.metaDescription}
+  canonical={canonical}
+  ogTitle={title}
+  ogDescription={post.data.metaDescription}
+  ogImage={ogImage}
+>
+
+<Fragment slot="head">
+  <script type="application/ld+json" set:html={articleSchema} />
+  <script type="application/ld+json" set:html={breadcrumbSchema} />
+  {faqSchema && <script type="application/ld+json" set:html={faqSchema} />}
+</Fragment>
+
+<style is:global>
+  .article-content h2 { font-family: 'Zilla Slab', Georgia, serif; font-weight: 700; font-size: clamp(22px,3vw,30px); color: #0E4D6E; margin-top: 48px; margin-bottom: 16px; line-height: 1.15; }
+  .article-content h3 { font-family: 'Zilla Slab', Georgia, serif; font-weight: 700; font-size: 20px; color: #0E4D6E; margin-top: 28px; margin-bottom: 8px; }
+  .article-content p { font-size: 16px; line-height: 1.8; color: #555; margin-bottom: 16px; }
+  .article-content a { color: #B96A2C; font-weight: 600; text-decoration: none; }
+  .article-content a:hover { text-decoration: underline; }
+  .article-content ul, .article-content ol { padding-inline-start: 20px; margin-bottom: 20px; }
+  .article-content li { font-size: 16px; line-height: 1.8; color: #555; margin-bottom: 8px; }
+  .article-content strong { color: #333A3F; }
+  .article-content em { font-style: italic; }
+  .article-content hr { border: none; border-top: 1px solid #e3ded4; margin: 32px 0; }
+  .article-content blockquote { border-inline-start: 4px solid #0E4D6E; margin: 24px 0; padding: 12px 20px; background: #F6F3ED; border-radius: 0 6px 6px 0; font-style: italic; color: #555; }
+  .article-content table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 15px; }
+  .article-content th { background: #0E4D6E; color: #F6F3ED; padding: 12px 16px; text-align: start; font-weight: 600; font-size: 14px; letter-spacing: 0.03em; }
+  .article-content td { padding: 12px 16px; border-bottom: 1px solid #e3ded4; color: #555; }
+  .article-content tr:last-child td { border-bottom: none; }
+  .article-content tr:nth-child(even) { background: #F6F3ED; }
+
+  .article-content > ul:first-of-type {
+    background: #F6F3ED; border: 1px solid #e3ded4; border-radius: 8px;
+    padding: 20px 24px 20px 40px; margin-bottom: 32px; list-style: none;
+  }
+  .article-content > ul:first-of-type li { padding-inline-start: 16px; position: relative; font-size: 15px; margin-bottom: 8px; color: #555; }
+  .article-content > ul:first-of-type li::before { content: ''; position: absolute; inset-inline-start: 0; top: 10px; width: 6px; height: 6px; background: #B96A2C; border-radius: 50%; }
+  .article-content > ul:first-of-type li a { color: #B96A2C; }
+
+  .article-content p:has(> strong:only-child) {
+    font-family: 'Zilla Slab', Georgia, serif; font-size: 18px; color: #333A3F;
+    margin-bottom: 6px; margin-top: 20px;
+  }
+
+  .content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 64px; align-items: start; }
+  @media (max-width: 768px) { .content-grid { grid-template-columns: 1fr; gap: 40px; } }
+
+  .btn-primary-blog { display: inline-flex; align-items: center; gap: 8px; background: #0E4D6E; color: #F6F3ED; font-family:'IBM Plex Sans Arabic', 'Noto Kufi Arabic', system-ui, sans-serif; font-weight: 600; font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; padding: 14px 28px; border: 2px solid #0E4D6E; border-radius: 4px; cursor: pointer; text-decoration: none; transition: background 0.2s, transform 0.15s, box-shadow 0.2s; box-shadow: 0 4px 14px rgba(14,77,110,0.25); }
+  .btn-primary-blog:hover { background: #16648C; box-shadow: 0 6px 20px rgba(14,77,110,0.35); transform: translateY(-1px); }
+  .btn-copper-blog { display: inline-flex; align-items: center; gap: 8px; background: #B96A2C; color: #F6F3ED; font-family:'IBM Plex Sans Arabic', 'Noto Kufi Arabic', system-ui, sans-serif; font-weight: 600; font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; padding: 13px 28px; border: 2px solid #B96A2C; border-radius: 4px; cursor: pointer; text-decoration: none; transition: background 0.2s, transform 0.15s; box-shadow: 0 4px 14px rgba(185,106,44,0.25); }
+  .btn-copper-blog:hover { background: #CE7E3D; transform: translateY(-1px); }
+</style>
+
+<!-- BREADCRUMB -->
+<nav aria-label="مسار التنقل" style="max-width:1180px;margin:0 auto;padding:16px 24px;">
+  <ol style="list-style:none;padding:0;margin:0;display:flex;gap:8px;font-size:13px;color:#888;">
+    <li><a href="/" style="color:#B96A2C;text-decoration:none;">الرئيسية</a></li>
+    <li>/</li>
+    <li><a href="/blog/" style="color:#B96A2C;text-decoration:none;">المقالات</a></li>
+    <li>/</li>
+    <li style="color:#333A3F;">{post.data.navTitle ?? post.data.title}</li>
+  </ol>
+</nav>
+
+<!-- HERO -->
+<section style="background:linear-gradient(135deg, #08344B 0%, #0E4D6E 60%, #08344B 100%);padding:64px 0;position:relative;overflow:hidden;">
+  {heroImg && (
+    <img src={heroImg} alt="" width="1600" height="700" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="eager" fetchpriority="high" aria-hidden="true" />
+  )}
+  {heroImg && (
+    <div style="position:absolute;inset:0;background:linear-gradient(100deg, rgba(8,52,75,0.92) 0%, rgba(8,52,75,0.72) 45%, rgba(8,52,75,0.45) 100%);"></div>
+  )}
+  <div style="max-width:1180px;margin:0 auto;padding:0 24px;position:relative;">
+    {post.data.tag && (
+      <span style="display:inline-block;margin-bottom:12px;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;background:rgba(143,208,234,0.18);color:#8FD0EA;border:1px solid rgba(143,208,234,0.3);">{post.data.tag}</span>
+    )}
+    <h1 style="font-family:'Zilla Slab',Georgia,serif;font-weight:700;color:#F6F3ED;line-height:1.1;letter-spacing:-0.01em;font-size:clamp(28px,4vw,48px);margin-bottom:10px;">{post.data.title}</h1>
+    <p style="font-size:13px;color:rgba(246,243,237,0.65);margin:0 0 14px;">نُشر في {dateDisplay} · شمس الوادي للطاقة الشمسية</p>
+    {post.data.subtitle && (
+      <p style="font-size:18px;line-height:1.7;color:rgba(246,243,237,0.8);max-width:600px;margin-bottom:28px;">{post.data.subtitle}</p>
+    )}
+    <div style="display:flex;flex-wrap:wrap;gap:16px;">
+      <a href="/#contact" class="btn-primary-blog" style="background:#F6F3ED;color:#0E4D6E;border-color:#F6F3ED;font-weight:700;">اطلب عرض سعر</a>
+      <a href="tel:+201000000000" class="btn-primary-blog" style="background:transparent;border-color:rgba(246,243,237,0.5);color:#F6F3ED;">اتصل <bdi>+20 100 000 0000</bdi></a>
+    </div>
+  </div>
+</section>
+
+<!-- ARTICLE CONTENT -->
+<section style="padding:72px 0;background:#fff;">
+  <div style="max-width:1180px;margin:0 auto;padding:0 24px;">
+    <div class="content-grid">
+
+      <div class="article-content">
+        <Content />
+      </div>
+
+      <aside>
+        <div style="background:#F6F3ED;border:1px solid #e3ded4;border-radius:8px;padding:28px;margin-bottom:24px;">
+          <h3 style="font-family:'Zilla Slab',Georgia,serif;font-weight:700;font-size:20px;color:#0E4D6E;margin-bottom:12px;">فاتورة كهرباء مرتفعة؟ انقطاعات متكررة؟</h3>
+          <p style="font-size:14px;line-height:1.7;color:#555;margin-bottom:20px;">سيقوم أحد مهندسينا بمعاينة عقارك وتزويدك بعرض سعر مكتوب وواضح قبل بدء أي عمل.</p>
+          <a href="/#contact" class="btn-primary-blog" style="width:100%;justify-content:center;margin-bottom:12px;">اطلب عرض سعر</a>
+          <a href="tel:+201000000000" class="btn-copper-blog" style="width:100%;justify-content:center;">اتصل <bdi>+20 100 000 0000</bdi></a>
+        </div>
+
+        <div style="background:#fff;border:1px solid #e3ded4;border-radius:8px;padding:28px;">
+          <h3 style="font-family:'Zilla Slab',Georgia,serif;font-weight:700;font-size:18px;color:#0E4D6E;margin-bottom:16px;">خدماتنا</h3>
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px;">
+            <li><a href="/solar-systems-homes-villas/" style="font-size:14px;color:#B96A2C;text-decoration:none;font-weight:500;">&#8594; محطات الطاقة الشمسية للمنازل والفيلات</a></li>
+            <li><a href="/solar-factories-hotels/" style="font-size:14px;color:#B96A2C;text-decoration:none;font-weight:500;">&#8594; الطاقة الشمسية للمصانع والفنادق والمنشآت التجارية</a></li>
+            <li><a href="/solar-irrigation-pumps/" style="font-size:14px;color:#B96A2C;text-decoration:none;font-weight:500;">&#8594; الري بالطاقة الشمسية ومضخات الآبار</a></li>
+            <li><a href="/hybrid-batteries-maintenance/" style="font-size:14px;color:#B96A2C;text-decoration:none;font-weight:500;">&#8594; الأنظمة الهجينة وبطاريات الليثيوم وعقود الصيانة</a></li>
+            <li><a href="/blog/" style="font-size:14px;color:#B96A2C;text-decoration:none;font-weight:500;">&#8592; كل المقالات</a></li>
+          </ul>
+        </div>
+
+        <div style="background:#fff;border:1px solid #e3ded4;border-radius:8px;padding:28px;margin-top:24px;">
+          <h3 style="font-family:'Zilla Slab',Georgia,serif;font-weight:700;font-size:18px;color:#0E4D6E;margin-bottom:12px;">المحافظات</h3>
+          <p style="font-size:14px;line-height:1.7;color:#555;">خدمات الطاقة الشمسية في المحافظات:</p>
+          <ul style="padding-inline-start:18px;margin-top:8px;">
+            <li style="font-size:14px;color:#555;margin-bottom:4px;">القاهرة, مصر</li>
+            <li style="font-size:14px;color:#555;margin-bottom:4px;">القاهرة، مصر</li>
+            <li style="font-size:14px;color:#555;margin-bottom:4px;">الإسكندرية, WA</li>
+            <li style="font-size:14px;color:#555;margin-bottom:4px;">الدقهلية, WA</li>
+            <li style="font-size:14px;color:#555;margin-bottom:4px;">الشرقية, WA</li>
+            <li style="font-size:14px;color:#555;margin-bottom:4px;">المنيا والبحر الأحمر</li>
+          </ul>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section style="background:linear-gradient(135deg, #0E4D6E 0%, #16648C 50%, #0E4D6E 100%);padding:64px 24px;text-align:center;">
+  <h2 style="font-family:'Zilla Slab',Georgia,serif;font-size:clamp(26px,4vw,40px);font-weight:700;color:#F6F3ED;margin-bottom:16px;">تفكر في الطاقة الشمسية في مصر؟</h2>
+  <p style="font-size:16px;color:rgba(246,243,237,0.8);margin-bottom:28px;max-width:520px;margin-inline-start:auto;margin-inline-end:auto;">اطلب عرض سعر من مهندسينا. نرد على الاستفسارات خلال يوم عمل واحد.</p>
+  <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
+    <a href="/#contact" class="btn-primary-blog" style="background:#F6F3ED;color:#0E4D6E;border-color:#F6F3ED;font-weight:700;">اطلب عرض سعر</a>
+    <a href="tel:+201000000000" class="btn-primary-blog" style="background:transparent;border-color:rgba(246,243,237,0.5);color:#F6F3ED;">اتصل <bdi>+20 100 000 0000</bdi></a>
+  </div>
+</section>
+
+</Layout>

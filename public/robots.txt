@@ -1,0 +1,6 @@
+# شمس الوادي للطاقة الشمسية — robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://shamselwadi.com/sitemap-index.xml
