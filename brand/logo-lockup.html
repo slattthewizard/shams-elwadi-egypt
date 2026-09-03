@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;700&family=Inter:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: transparent; font-family: 'IBM Plex Sans Arabic', 'Noto Kufi Arabic', 'Segoe UI', Tahoma, sans-serif; }
+  .lockup { display: inline-flex; align-items: center; gap: 28px; padding: 40px 56px; background: #fff; direction: rtl; }
+  .lockup.dark { background: #0F5C63; }
+  .lockup img { width: 168px; height: 168px; display: block; }
+  .words { display: flex; flex-direction: column; align-items: flex-start; text-align: right; }
+  .ar { font-size: 64px; font-weight: 700; color: #0F5C63; line-height: 1.15; letter-spacing: 0; }
+  .ar .sun { color: #E3A72F; }
+  .ar-sub { font-size: 30px; font-weight: 500; color: #0F5C63; opacity: .85; line-height: 1.2; margin-top: 2px; }
+  .en { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; font-size: 22px; font-weight: 600; color: #0F5C63; letter-spacing: .18em; text-transform: uppercase; margin-top: 14px; direction: ltr; align-self: flex-end; }
+  .dark .ar, .dark .ar-sub, .dark .en { color: #fff; }
+  .dark .ar .sun { color: #E3A72F; }
+  .stack { display: inline-flex; flex-direction: column; align-items: center; gap: 18px; padding: 56px 72px; background: #fff; direction: rtl; }
+  .stack img { width: 220px; height: 220px; }
+  .stack .ar { font-size: 58px; text-align: center; }
+  .stack .ar-sub { font-size: 26px; text-align: center; }
+  .stack .en { align-self: center; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div id="horizontal" class="lockup">
+  <img src="../public/logo-mark.png" alt="">
+  <div class="words">
+    <div class="ar"><span class="sun">شمس</span> الوادي</div>
+    <div class="ar-sub">للطاقة الشمسية</div>
+    <div class="en">Shams El Wadi Solar</div>
+  </div>
+</div>
+<br><br>
+<div id="horizontal-dark" class="lockup dark">
+  <img src="../public/logo-mark.png" alt="">
+  <div class="words">
+    <div class="ar"><span class="sun">شمس</span> الوادي</div>
+    <div class="ar-sub">للطاقة الشمسية</div>
+    <div class="en">Shams El Wadi Solar</div>
+  </div>
+</div>
+<br><br>
+<div id="stacked" class="stack">
+  <img src="../public/logo-mark.png" alt="">
+  <div class="ar"><span class="sun">شمس</span> الوادي</div>
+  <div class="ar-sub">للطاقة الشمسية</div>
+  <div class="en">Shams El Wadi Solar</div>
+</div>
+</body>
+</html>
