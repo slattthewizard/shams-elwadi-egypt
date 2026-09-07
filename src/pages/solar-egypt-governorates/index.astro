@@ -1,0 +1,184 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+// The governorate grid. `co` is the electricity distribution company that
+// receives the net-metering connection request — named ONLY where it is
+// established; left null where it is not, rather than guessed.
+const REGIONS = [
+  {
+    name: 'القاهرة الكبرى',
+    note: 'المقر الرئيسي في القاهرة، ومنه ينطلق فريق المعاينة إلى باقي المحافظات.',
+    govs: [
+      { slug: 'solar-giza', name: 'الجيزة', co: null, hook: '6 أكتوبر والشيخ زايد والهرم: فيلات وكمبوندات ومناطق صناعية.' },
+      { slug: 'solar-qalyubia', name: 'القليوبية', co: 'شركة شمال القاهرة لتوزيع الكهرباء', hook: 'العبور وقليوب: صناعة خفيفة وكثافة سكنية على أطراف القاهرة.' },
+    ],
+  },
+  {
+    name: 'الدلتا',
+    note: 'عمارات عائلية عالية الأحمال، ومصانع نسيج وأغذية، ومزارع ومزارع سمكية.',
+    govs: [
+      { slug: 'solar-alexandria', name: 'الإسكندرية', co: 'شركة الإسكندرية لتوزيع الكهرباء', hook: 'الكورنيش والعجمي وبرج العرب: رطوبة وملوحة تؤثر على الهياكل.' },
+      { slug: 'solar-beheira', name: 'البحيرة', co: 'شركة البحيرة لتوزيع الكهرباء', hook: 'النوبارية والطريق الصحراوي: مزارع كبيرة وثلاجات ومحطات فرز.' },
+      { slug: 'solar-gharbia', name: 'الغربية', co: 'شركة جنوب الدلتا لتوزيع الكهرباء', hook: 'المحلة الكبرى وطنطا: أسطح مصانع النسيج أكبر فرصة في المحافظة.' },
+      { slug: 'solar-menoufia', name: 'المنوفية', co: 'شركة جنوب الدلتا لتوزيع الكهرباء', hook: 'مدينة السادات الصناعية بجوار زراعة كثيفة.' },
+      { slug: 'solar-dakahlia', name: 'الدقهلية', co: 'شركة شمال الدلتا لتوزيع الكهرباء', hook: 'المنصورة وميت غمر: عمارات عائلية ومصانع صغيرة ومتوسطة.' },
+      { slug: 'solar-kafr-el-sheikh', name: 'كفر الشيخ', co: 'شركة شمال الدلتا لتوزيع الكهرباء', hook: 'أرز ومزارع سمكية حول البرلس وبلطيم، وهواء مالح رطب.' },
+      { slug: 'solar-damietta', name: 'دمياط', co: 'شركة شمال الدلتا لتوزيع الكهرباء', hook: 'ورش الأثاث والميناء: أحمال نهارية تناسب الشمسي.' },
+      { slug: 'solar-sharqia', name: 'الشرقية', co: null, hook: 'العاشر من رمضان والزقازيق: من أكبر المناطق الصناعية في مصر.' },
+    ],
+  },
+  {
+    name: 'القناة وسيناء',
+    note: 'موانئ ومناطق حرة وصناعة ثقيلة، وفنادق البحر الأحمر وجنوب سيناء.',
+    govs: [
+      { slug: 'solar-port-said', name: 'بورسعيد', co: 'شركة القناة لتوزيع الكهرباء', hook: 'المنطقة الحرة والثلاجات والمخازن على أسطح مسطحة.' },
+      { slug: 'solar-ismailia', name: 'الإسماعيلية', co: 'شركة القناة لتوزيع الكهرباء', hook: 'مزارع ومزارع مانجو على امتداد القناة.' },
+      { slug: 'solar-suez', name: 'السويس', co: 'شركة القناة لتوزيع الكهرباء', hook: 'المنطقة الاقتصادية والمصافي: أحمال صناعية كبيرة ومستمرة.' },
+      { slug: 'solar-north-sinai', name: 'شمال سيناء', co: null, hook: 'العريش والاستصلاح: مسافات طويلة وأنظمة هايبرد وأوف جريد.' },
+      { slug: 'solar-south-sinai', name: 'جنوب سيناء', co: null, hook: 'شرم الشيخ ودهب: فنادق ومراكز غوص وخطة 2030 للطاقة النظيفة.' },
+    ],
+  },
+  {
+    name: 'مصر الوسطى',
+    note: 'صناعة ثقيلة واستصلاح على الأطراف الصحراوية وري بالآبار.',
+    govs: [
+      { slug: 'solar-beni-suef', name: 'بني سويف', co: 'شركة مصر الوسطى لتوزيع الكهرباء', hook: 'مصانع الأسمنت وأحمالها الضخمة، واستصلاح غرب المحافظة.' },
+      { slug: 'solar-fayoum', name: 'الفيوم', co: 'شركة مصر الوسطى لتوزيع الكهرباء', hook: 'مزارع سمكية حول قارون وري وسياحة بيئية في تونس ووادي الريان.' },
+      { slug: 'solar-minya', name: 'المنيا', co: 'شركة مصر الوسطى لتوزيع الكهرباء', hook: 'آبار الاستصلاح غرب المنيا: الري الشمسي هو الطلب الأول.' },
+    ],
+  },
+  {
+    name: 'الصعيد',
+    note: 'أعلى إشعاع شمسي في مصر، وأكبر طلب على استبدال مضخات الديزل.',
+    govs: [
+      { slug: 'solar-assiut', name: 'أسيوط', co: 'شركة مصر العليا لتوزيع الكهرباء', hook: 'استصلاح شرق وغرب النيل على آبار جوفية.' },
+      { slug: 'solar-sohag', name: 'سوهاج', co: 'شركة مصر العليا لتوزيع الكهرباء', hook: 'قصب السكر ورفع المياه من الترع، ومنطقة الكوثر الصناعية.' },
+      { slug: 'solar-qena', name: 'قنا', co: 'شركة مصر العليا لتوزيع الكهرباء', hook: 'مجمع الألومنيوم بنجع حمادي وزراعات القصب.' },
+      { slug: 'solar-luxor', name: 'الأقصر', co: 'شركة مصر العليا لتوزيع الكهرباء', hook: 'فنادق ومراكب نيلية بأحمال تكييف نهارية طول الموسم.' },
+      { slug: 'solar-aswan', name: 'أسوان', co: 'شركة مصر العليا لتوزيع الكهرباء', hook: 'أعلى إشعاع في البلاد، وموطن محطة بنبان.' },
+    ],
+  },
+  {
+    name: 'البحر الأحمر والصحراء',
+    note: 'فنادق ومنتجعات، وواحات تعتمد على آبار عميقة بعيداً عن الشبكة.',
+    govs: [
+      { slug: 'solar-red-sea', name: 'البحر الأحمر', co: null, hook: 'الغردقة ومرسى علم: فنادق ومراكز غوص وخطة 2030.' },
+      { slug: 'solar-matrouh', name: 'مطروح', co: null, hook: 'الساحل الشمالي موسمياً، وسيوة خارج الشبكة على آبار وزيتون.' },
+      { slug: 'solar-new-valley', name: 'الوادي الجديد', co: null, hook: 'الخارجة والداخلة: آبار عميقة واستصلاح، أغلبه أوف جريد.' },
+    ],
+  },
+];
+
+const total = REGIONS.reduce((n, r) => n + r.govs.length, 0);
+const canonical = 'https://shamselwadi.com/solar-egypt-governorates/';
+const title = 'الطاقة الشمسية في محافظات مصر: دليل التغطية والشركات';
+const description = `تغطي شمس الوادي ${total} محافظة في مصر بمحطات الطاقة الشمسية للمنازل والمصانع والفنادق والمزارع. اختر محافظتك لتعرف شركة التوزيع والطلب الغالب فيها وكيف نعمل هناك.`;
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'الرئيسية', item: 'https://shamselwadi.com/' },
+    { '@type': 'ListItem', position: 2, name: 'المحافظات', item: canonical },
+  ],
+};
+const itemListLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'محافظات تغطيها شمس الوادي للطاقة الشمسية',
+  numberOfItems: total,
+  itemListElement: REGIONS.flatMap((r) => r.govs).map((g, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: g.name,
+    url: `https://shamselwadi.com/${g.slug}/`,
+  })),
+};
+---
+
+<Layout title={title + ' | شمس الوادي'} description={description} canonical={canonical}>
+<Fragment slot="head">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
+  <script type="application/ld+json" set:html={JSON.stringify(itemListLd)} />
+  <style is:global>
+    .rich p { font-size: 16px; line-height: 1.8; color: #555; margin: 0 0 16px; }
+    .rich a { color: #1273A8; font-weight: 600; text-decoration: none; }
+    .rich a:hover { text-decoration: underline; }
+    .gov-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .gov-card {
+      display:block; background:#fff; border:1px solid #e3ded4; border-radius:10px;
+      padding:20px 22px; text-decoration:none; transition:box-shadow .2s, transform .2s, border-color .2s;
+    }
+    .gov-card:hover { box-shadow:0 8px 22px rgba(14,77,110,0.10); transform:translateY(-2px); border-color:#bcd8e8; }
+    .gov-name { font-family:'IBM Plex Sans Arabic','Noto Kufi Arabic',system-ui,sans-serif; font-size:18px; font-weight:800; color:#0A3D5C; margin:0 0 6px; }
+    .gov-hook { font-size:14px; line-height:1.65; color:#555; margin:0 0 10px; }
+    .gov-co { font-size:12.5px; color:#7b8a93; margin:0; }
+    @media (max-width: 960px) { .gov-grid { grid-template-columns:repeat(2,1fr); } }
+    @media (max-width: 620px) { .gov-grid { grid-template-columns:1fr; } }
+  </style>
+</Fragment>
+
+<nav aria-label="مسار التنقل" style="max-width:1180px;margin:0 auto;padding:16px 24px;">
+  <ol style="list-style:none;padding:0;margin:0;display:flex;gap:8px;font-size:13px;color:#888;">
+    <li><a href="/" style="color:#1273A8;text-decoration:none;">الرئيسية</a></li>
+    <li>/</li>
+    <li style="color:#2B3A44;">المحافظات</li>
+  </ol>
+</nav>
+
+<section style="background:linear-gradient(135deg, #08344B 0%, #0E4D6E 65%, #08344B 100%);padding:64px 24px;">
+  <div style="max-width:900px;margin:0 auto;text-align:center;">
+    <span style="display:inline-block;margin-bottom:12px;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:rgba(143,208,234,0.18);color:#8FD0EA;border:1px solid rgba(143,208,234,0.3);">نطاق التغطية</span>
+    <h1 style="font-family:'IBM Plex Sans Arabic','Noto Kufi Arabic',system-ui,sans-serif;font-weight:800;color:#fff;line-height:1.1;font-size:clamp(28px,4.2vw,48px);margin:0 0 18px;">الطاقة الشمسية في محافظات مصر</h1>
+    <p style="font-size:18px;line-height:1.75;color:rgba(255,255,255,0.85);max-width:640px;margin:0 auto;">نعمل من القاهرة في {total} محافظة. لكل محافظة صفحة تشرح الطلب الغالب فيها، وشركة التوزيع التي تستقبل طلب الربط بعداد صافي القياس، والعوامل الفنية التي تغيّر التصميم هناك.</p>
+  </div>
+</section>
+
+<section style="padding:56px 24px 8px;">
+  <div style="max-width:900px;margin:0 auto;">
+    <div class="rich">
+      <p>الطاقة الشمسية في مصر لا تُصمَّم بالطريقة نفسها في كل مكان. البئر العميق في الوادي الجديد ومصنع النسيج في المحلة وفندق في شرم الشيخ وشقة في المنصورة تحتاج كلٌّ منها نظاماً مختلفاً في القدرة والمكوّنات وطريقة الربط، حتى لو كانت الألواح واحدة.</p>
+      <p>التعريفة المنزلية نفسها موحدة في الجمهورية كلها، لكن <strong>شركة التوزيع تختلف من محافظة إلى أخرى</strong>، وهي الجهة التي تستقبل طلب الربط وتركّب عداد صافي القياس. لحساب فاتورتك ومعرفة شريحتك قبل أي قرار، استخدم <a href="/electricity-bill-calculator/">حاسبة فاتورة الكهرباء وشرائح الكهرباء</a>، وللأرقام الاسترشادية راجع <a href="/solar-prices-egypt/">أسعار الطاقة الشمسية في مصر</a>.</p>
+    </div>
+  </div>
+</section>
+
+{REGIONS.map((r) => (
+  <section style="padding:24px 24px 8px;">
+    <div style="max-width:1100px;margin:0 auto;">
+      <span class="kicker">{r.name}</span>
+      <h2 class="section-heading" style="font-size:clamp(20px,2.6vw,28px);margin:0 0 6px;">{r.name}</h2>
+      <p style="font-size:15px;color:#7b8a93;line-height:1.7;margin:0 0 22px;max-width:740px;">{r.note}</p>
+      <div class="gov-grid">
+        {r.govs.map((g) => (
+          <a class="gov-card" href={`/${g.slug}/`}>
+            <p class="gov-name">{g.name}</p>
+            <p class="gov-hook">{g.hook}</p>
+            {g.co && <p class="gov-co">شركة التوزيع: {g.co}</p>}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+))}
+
+<section style="padding:48px 24px 8px;">
+  <div style="max-width:900px;margin:0 auto;">
+    <h2 class="section-heading" style="font-size:clamp(22px,3vw,32px);margin:0 0 18px;">محافظتك ليست في القائمة؟</h2>
+    <div class="rich">
+      <p>الصفحات أعلاه تغطي المحافظات التي نعمل فيها بانتظام. إن كان موقعك خارجها فاتصل بنا على أي حال: الفريق يتحرك من القاهرة، ونجمع أكثر من موقع في الرحلة الواحدة كلما أمكن، وهو ما يجعل المواقع البعيدة عملية عندما يكون المشروع بحجم يستحق الزيارة.</p>
+      <p>في كل الحالات تبدأ العملية بالطريقة نفسها: معاينة مجانية نقرأ فيها فاتورتك ونقيس السطح أو البئر والحمل، ثم عرض سعر مكتوب. لا نعطي رقماً نهائياً بالهاتف.</p>
+    </div>
+  </div>
+</section>
+
+<section style="background:linear-gradient(135deg, #0E4D6E 0%, #16648C 50%, #0E4D6E 100%);padding:64px 24px;text-align:center;margin-top:40px;">
+  <h2 style="font-family:'IBM Plex Sans Arabic','Noto Kufi Arabic',system-ui,sans-serif;font-size:clamp(26px,4vw,40px);font-weight:800;color:#fff;margin-bottom:16px;">اختر محافظتك وابدأ بمعاينة مجانية</h2>
+  <p style="font-size:16px;color:rgba(255,255,255,0.8);margin-bottom:28px;max-width:520px;margin-inline-start:auto;margin-inline-end:auto;">أرسل لنا صورة آخر فاتورة كهرباء وموقع المشروع، ونرد بعرض سعر مكتوب بعد المعاينة.</p>
+  <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
+    <a href="tel:+201283355408" class="btn-cream">اتصل الآن — <bdi>+20 128 335 5408</bdi></a>
+    <a href="/#contact" class="btn-outline-white">اطلب عرض سعر</a>
+  </div>
+</section>
+
+</Layout>

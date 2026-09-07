@@ -1,0 +1,347 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+// ---------------------------------------------------------------------------
+// SINGLE SOURCE OF TRUTH for the tariff.
+// Rates: residential tariff in force from the August 2026 bill (~12% rise on
+// every tier above the first). Source of record is the site config's
+// marketFacts, taken from almasryalyoum.com and algomhor.com, 31 Aug - 2 Sept
+// 2026, and corroborated by masrawy.com and youm7.com on 1 Aug 2026.
+// Structure ("from zero" on the upper brackets): جهاز تنظيم مرفق الكهرباء
+// (EgyptERA), "نموذج كيفية حساب الفاتورة", egyptera.org/ar/BillDe.aspx.
+//
+// This array is rendered into the visible table below AND serialised to the
+// browser, so the numbers on screen and the numbers in the maths can never
+// drift apart. Do not hard-code a rate anywhere else on this page.
+// ---------------------------------------------------------------------------
+// `band`    = the monthly consumption that puts you in this tier.
+// `applies` = which units that tier's rate is actually charged on. These differ
+//             on tiers 3, 6 and 7, and that difference is the whole story of the
+//             Egyptian bill — keep both columns.
+const TARIFF = [
+  { n: 1, from: 0,    to: 50,   rate: 0.68,   band: 'حتى 50 ك.و.س',        applies: 'أول 50 وحدة',              label: 'أول 50 ك.و.س',              mode: 'slice' },
+  { n: 2, from: 51,   to: 100,  rate: 0.8736, band: 'من 51 حتى 100',       applies: 'الوحدات من 51 إلى 100',     label: 'من 51 حتى 100 ك.و.س',        mode: 'slice' },
+  { n: 3, from: 101,  to: 200,  rate: 1.064,  band: 'من 101 حتى 200',      applies: 'أول 200 وحدة، من الصفر',    label: 'من صفر حتى 200 ك.و.س',       mode: 'slice' },
+  { n: 4, from: 201,  to: 350,  rate: 1.736,  band: 'من 201 حتى 350',      applies: 'الوحدات من 201 إلى 350',    label: 'من 201 حتى 350 ك.و.س',       mode: 'slice' },
+  { n: 5, from: 351,  to: 650,  rate: 2.184,  band: 'من 351 حتى 650',      applies: 'الوحدات من 351 إلى 650',    label: 'من 351 حتى 650 ك.و.س',       mode: 'slice' },
+  { n: 6, from: 651,  to: 1000, rate: 2.352,  band: 'من 651 حتى 1000',     applies: 'الاستهلاك كله من الصفر',    label: 'من صفر حتى 1000 ك.و.س',      mode: 'whole' },
+  { n: 7, from: 1001, to: null, rate: 2.89,   band: 'أكثر من 1000',        applies: 'الاستهلاك كله من الصفر',    label: 'من صفر لأكثر من 1000 ك.و.س', mode: 'whole' },
+];
+
+// Mirrors the client-side function exactly; used for the worked examples below.
+function billFor(kwh: number) {
+  if (kwh <= 0) return 0;
+  if (kwh <= 50) return kwh * 0.68;
+  if (kwh <= 100) return 50 * 0.68 + (kwh - 50) * 0.8736;
+  if (kwh <= 200) return kwh * 1.064;
+  if (kwh <= 350) return 200 * 1.064 + (kwh - 200) * 1.736;
+  if (kwh <= 650) return 200 * 1.064 + 150 * 1.736 + (kwh - 350) * 2.184;
+  if (kwh <= 1000) return kwh * 2.352;
+  return kwh * 2.89;
+}
+const round = (x: number) => Math.round(x * 100) / 100;
+const egp = (x: number) => round(x).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+// The two cliffs, computed rather than typed, so they stay true if a rate changes.
+const cliff650 = { a: billFor(650), b: billFor(651), jump: billFor(651) - billFor(650) };
+const cliff1000 = { a: billFor(1000), b: billFor(1001), jump: billFor(1001) - billFor(1000) };
+
+const FAQ = [
+  {
+    q: 'كيف تُحسب فاتورة الكهرباء في مصر بالضبط؟',
+    a: 'استهلاكك الشهري كله هو الذي يحدد الشريحة أولاً، ثم تُحسب الفاتورة على أساسها. حتى 100 ك.و.س يُحسب الاستهلاك شريحة فوق شريحة: أول 50 بسعرها ثم الخمسون التالية بسعرها. فوق 100 وحتى 650 تبدأ الشرائح من الصفر مرة أخرى بأسعار الشرائح الثالثة والرابعة والخامسة. أما فوق 650 فالأمر يختلف تماماً: يُضرب استهلاكك كله من أول كيلوواط في سعر الشريحة الواحد.',
+  },
+  {
+    q: 'لماذا قفزت فاتورتي فجأة رغم أن استهلاكي زاد قليلاً؟',
+    a: 'لأن الشريحتين السادسة والسابعة تُطبَّقان على الاستهلاك كله من الصفر وليس على الجزء الزائد فقط. بأسعار أغسطس 2026، من يستهلك 650 ك.و.س تكون فاتورته نحو ' + egp(cliff650.a) + ' جنيه، ومن يستهلك 651 ك.و.س تصبح فاتورته نحو ' + egp(cliff650.b) + ' جنيه: فرق نحو ' + egp(cliff650.jump) + ' جنيه مقابل كيلوواط واحد. القفزة نفسها تتكرر عند تجاوز 1000 ك.و.س.',
+  },
+  {
+    q: 'هل هذه الحاسبة تعطي رقم الفاتورة النهائي؟',
+    a: 'لا، تعطي قيمة الاستهلاك التقديرية فقط. الفاتورة الفعلية تضاف إليها رسوم ثابتة مثل خدمة العملاء وما تقرره الدولة من ضرائب ودمغات، وهي تختلف بحسب شركة التوزيع وفئة الاشتراك. للرقم الرسمي راجع حاسبة جهاز تنظيم مرفق الكهرباء أو فاتورتك من شركة التوزيع التابع لها.',
+  },
+  {
+    q: 'هل تختلف الأسعار من محافظة إلى أخرى؟',
+    a: 'لا. تعريفة الاستخدام المنزلي واحدة في مصر كلها، ويصدرها جهاز تنظيم مرفق الكهرباء. ما يختلف هو شركة التوزيع التي تصدر فاتورتك وتستقبل طلباتك: مصر العليا في الصعيد، مصر الوسطى في المنيا وبني سويف والفيوم، شمال وجنوب الدلتا، والقناة في محافظات القناة، والإسكندرية والبحيرة.',
+  },
+  {
+    q: 'كيف تخفض الطاقة الشمسية الفاتورة في ظل هذا النظام؟',
+    a: 'الوفر الحقيقي يأتي من إزاحة استهلاكك إلى شريحة أقل، لا من توفير كيلوواط أو اثنين. من يستهلك 900 ك.و.س شهرياً يدفع على استهلاكه كله بسعر الشريحة السادسة؛ فإذا غطت محطة شمسية جزءاً من استهلاكه ونزل ما يسحبه من الشبكة تحت 650، خرج من نظام الشريحة الكاملة كلياً. لهذا نحسب حجم المحطة على فاتورتك الفعلية، لا على مساحة السطح.',
+  },
+];
+
+const canonical = 'https://shamselwadi.com/electricity-bill-calculator/';
+const title = 'حاسبة فاتورة الكهرباء وشرائح الكهرباء في مصر 2026';
+const description = 'احسب فاتورة الكهرباء بأسعار شرائح الكهرباء الجديدة 2026، واعرف شريحتك وكيف تُحسب الفاتورة فعلياً ولماذا تقفز فوق 650 ك.و.س وكيف تخفضها بالطاقة الشمسية.';
+
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'الرئيسية', item: 'https://shamselwadi.com/' },
+    { '@type': 'ListItem', position: 2, name: 'حاسبة فاتورة الكهرباء وشرائح الكهرباء 2026', item: canonical },
+  ],
+};
+const appLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'حاسبة فاتورة الكهرباء المصرية 2026',
+  url: canonical,
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Web',
+  inLanguage: 'ar-EG',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'EGP' },
+  publisher: { '@id': 'https://shamselwadi.com/#organization' },
+};
+---
+
+<Layout title={title + ' | شمس الوادي'} description={description} canonical={canonical}>
+<Fragment slot="head">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
+  <script type="application/ld+json" set:html={JSON.stringify(appLd)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+  <style is:global>
+    .rich p { font-size: 16px; line-height: 1.8; color: #555; margin: 0 0 16px; }
+    .rich ul { padding-inline-start: 20px; margin: 0 0 16px; }
+    .rich li { font-size: 16px; line-height: 1.8; color: #555; margin-bottom: 8px; }
+    .rich strong { color: #2B3A44; }
+    .rich a { color: #1273A8; font-weight: 600; text-decoration: none; }
+    .rich a:hover { text-decoration: underline; }
+
+    .calc-card { background:#fff; border-radius:14px; padding:28px; box-shadow:0 24px 48px rgba(0,0,0,0.22); }
+    .calc-input {
+      width:100%; box-sizing:border-box; font-family:inherit; font-size:22px; font-weight:800;
+      color:#0A3D5C; padding:14px 16px; border:2px solid #cfe3ef; border-radius:10px; background:#F7FBFD;
+      text-align:center;
+    }
+    .calc-input:focus { outline:none; border-color:#1273A8; background:#fff; }
+    .calc-out { margin-top:20px; border-top:1px dashed #d8e6ee; padding-top:20px; }
+    .calc-amount { font-size:clamp(30px,5vw,42px); font-weight:800; color:#0A3D5C; line-height:1.1; }
+    .calc-tier { display:inline-block; margin-top:10px; padding:5px 14px; border-radius:999px; font-size:13px; font-weight:700; background:#EAF5FB; color:#0E4D6E; }
+    .calc-warn { margin-top:14px; padding:12px 14px; border-radius:8px; background:#FFF4E5; border:1px solid #F5D9A8; color:#8A5A12; font-size:14px; line-height:1.7; }
+    .calc-note { margin-top:14px; font-size:12.5px; line-height:1.7; color:#7b8a93; }
+
+    .tariff-table { width:100%; border-collapse:collapse; font-size:15px; }
+    .tariff-table th, .tariff-table td { padding:13px 14px; border-bottom:1px solid #e3ded4; text-align:start; }
+    .tariff-table thead th { background:#0E4D6E; color:#fff; font-weight:700; font-size:14px; }
+    .tariff-table tbody tr:nth-child(even) { background:#F7FBFD; }
+    .tariff-table td.rate { font-weight:800; color:#0A3D5C; white-space:nowrap; }
+    .tariff-table tr.whole td { background:#FDF1F1; }
+    .tariff-table tr.whole td.rate { color:#A32020; }
+    .table-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid #e3ded4; border-radius:10px; }
+
+    @media (max-width: 860px) {
+      .calc-grid { grid-template-columns: 1fr !important; }
+    }
+  </style>
+</Fragment>
+
+<nav aria-label="مسار التنقل" style="max-width:1180px;margin:0 auto;padding:16px 24px;">
+  <ol style="list-style:none;padding:0;margin:0;display:flex;gap:8px;font-size:13px;color:#888;">
+    <li><a href="/" style="color:#1273A8;text-decoration:none;">الرئيسية</a></li>
+    <li>/</li>
+    <li style="color:#2B3A44;">حاسبة فاتورة الكهرباء</li>
+  </ol>
+</nav>
+
+<section style="background:linear-gradient(135deg, #08344B 0%, #0E4D6E 65%, #08344B 100%);padding:64px 24px;">
+  <div class="calc-grid" style="max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.05fr 0.95fr;gap:48px;align-items:center;">
+    <div>
+      <span style="display:inline-block;margin-bottom:12px;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:rgba(143,208,234,0.18);color:#8FD0EA;border:1px solid rgba(143,208,234,0.3);">أداة مجانية</span>
+      <h1 style="font-family:'IBM Plex Sans Arabic', 'Noto Kufi Arabic', system-ui, sans-serif;font-weight:800;color:#fff;line-height:1.1;letter-spacing:-0.01em;font-size:clamp(28px,4.2vw,48px);margin:0 0 18px;">حاسبة فاتورة الكهرباء وشرائح الكهرباء في مصر 2026</h1>
+      <p style="font-size:18px;line-height:1.75;color:rgba(255,255,255,0.85);max-width:560px;margin:0 0 22px;">اكتب استهلاكك بالكيلوواط ساعة من العداد، واعرف شريحتك وقيمة استهلاكك التقديرية بأسعار التعريفة السارية من فاتورة أغسطس 2026. والأهم: اعرف إن كنت قريباً من قفزة الشريحة التي تضاعف الفاتورة.</p>
+      <p style="font-size:14.5px;line-height:1.7;color:rgba(255,255,255,0.62);max-width:560px;margin:0;">أعدّها مهندسو شمس الوادي لأن أول سؤال يصلنا دائماً هو «فاتورتي بقت كام ولماذا».</p>
+    </div>
+
+    <div class="calc-card">
+      <label for="kwh" style="display:block;font-size:14.5px;font-weight:700;color:#2B3A44;margin-bottom:10px;">استهلاك الشهر بالكيلوواط ساعة (ك.و.س)</label>
+      <input class="calc-input" id="kwh" type="number" inputmode="numeric" min="0" max="20000" step="1" value="450" aria-describedby="kwh-help" />
+      <p id="kwh-help" style="font-size:12.5px;color:#7b8a93;margin:8px 0 0;">الفرق بين قراءة العداد هذا الشهر والشهر الماضي.</p>
+
+      <div class="calc-out" aria-live="polite">
+        <div style="font-size:13.5px;color:#7b8a93;font-weight:600;margin-bottom:4px;">قيمة الاستهلاك التقديرية</div>
+        <div class="calc-amount"><span id="amount">—</span> <span style="font-size:0.5em;font-weight:700;color:#7b8a93;">جنيه / شهر</span></div>
+        <div><span class="calc-tier" id="tier">—</span></div>
+        <div id="rate-line" style="margin-top:10px;font-size:14px;color:#555;line-height:1.7;"></div>
+        <div class="calc-warn" id="warn" hidden></div>
+        <p class="calc-note">قيمة الاستهلاك فقط. لا تشمل رسوم خدمة العملاء والدمغات والرسوم الثابتة التي تضيفها شركة التوزيع، وهي تختلف بحسب الشركة وفئة الاشتراك.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:64px 24px 8px;">
+  <div style="max-width:900px;margin:0 auto;">
+    <span class="kicker">التعريفة السارية</span>
+    <h2 class="section-heading" style="font-size:clamp(22px,3vw,32px);margin:0 0 8px;">أسعار شرائح الكهرباء المنزلية 2026</h2>
+    <p style="font-size:15px;color:#7b8a93;margin:0 0 22px;line-height:1.7;">الأسعار السارية على الاستخدام المنزلي بدءاً من فاتورة أغسطس 2026، بعد زيادة بمتوسط 12% على كل الشرائح فيما عدا الأولى.</p>
+
+    <div class="table-scroll">
+      <table class="tariff-table">
+        <thead>
+          <tr>
+            <th scope="col">الشريحة</th>
+            <th scope="col">إذا كان استهلاكك الشهري</th>
+            <th scope="col">السعر</th>
+            <th scope="col">يُطبَّق على</th>
+          </tr>
+        </thead>
+        <tbody>
+          {TARIFF.map((t) => (
+            <tr class={t.mode === 'whole' ? 'whole' : ''}>
+              <th scope="row" style="font-weight:700;color:#2B3A44;">الشريحة {t.n}</th>
+              <td>{t.band}</td>
+              <td class="rate">{t.rate < 1 ? Math.round(t.rate * 10000) / 100 + ' قرش' : t.rate + ' جنيه'}</td>
+              <td style="font-size:14px;color:#555;">{t.applies}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12.5px;color:#7b8a93;margin:12px 0 0;line-height:1.8;">الأسعار كما نشرتها الصحف المصرية في 1 أغسطس 2026 (المصري اليوم، مصراوي، اليوم السابع). بنية الحساب وفق نموذج «كيفية حساب الفاتورة» الصادر عن <a href="https://egyptera.org/ar/BillDe.aspx" rel="nofollow noopener" target="_blank" style="color:#1273A8;font-weight:600;text-decoration:none;">جهاز تنظيم مرفق الكهرباء</a>. الشرائح التجارية لها جدول مختلف لا تشمله هذه الحاسبة.</p>
+  </div>
+</section>
+
+<section style="padding:48px 24px 8px;">
+  <div style="max-width:900px;margin:0 auto;">
+    <h2 class="section-heading" style="font-size:clamp(22px,3vw,32px);margin:0 0 18px;">كيف تُحسب الفاتورة فعلياً: النقطة التي يخطئ فيها الجميع</h2>
+    <div class="rich">
+      <p>أغلب الناس يفترضون أن الفاتورة تُحسب شريحة فوق شريحة دائماً، مثل ضريبة الدخل: أول 50 وحدة بسعرها، ثم التي تليها بسعرها، وهكذا. هذا صحيح في الجزء الأسفل من الجدول فقط، وغير صحيح في أعلاه، وهنا يقع الالتباس الذي يجعل الفاتورة تبدو «غلط».</p>
+      <p>النظام المصري يعمل على ثلاث مراحل. حتى 100 ك.و.س تُحسب الشرائح تصاعدياً: أول 50 وحدة بسعر الشريحة الأولى، ثم من 51 إلى 100 بسعر الشريحة الثانية. وفوق 100 وحتى 650 تبدأ الشرائح من الصفر من جديد بأسعار الشرائح الثالثة والرابعة والخامسة، ولهذا كُتبت الشريحة الثالثة في نموذج الجهاز بصيغة «من صفر حتى 200».</p>
+      <p><strong>أما فوق 650 ك.و.س فالمنطق ينقلب:</strong> لا تُحسب شرائح ولا أجزاء، بل يُضرب استهلاكك كله من أول كيلوواط في سعر واحد. من يستهلك 800 ك.و.س يدفع سعر الشريحة السادسة على الثمانمائة كلها، لا على ما زاد عن 650. والشيء نفسه فوق 1000 بسعر الشريحة السابعة.</p>
+    </div>
+  </div>
+</section>
+
+<section style="padding:24px 24px 8px;">
+  <div style="max-width:900px;margin:0 auto;">
+    <div style="background:#FDF1F1;border:1px solid #F0C9C9;border-radius:12px;padding:28px 30px;">
+      <h2 style="font-family:'IBM Plex Sans Arabic', 'Noto Kufi Arabic', system-ui, sans-serif;font-size:clamp(20px,2.6vw,26px);font-weight:800;color:#A32020;margin:0 0 14px;">قفزة الـ 650: كيلوواط واحد يمكن أن يكلفك مئات الجنيهات</h2>
+      <div class="rich">
+        <p>هذه ليست مبالغة، بل نتيجة مباشرة لطريقة الحساب. بأسعار أغسطس 2026:</p>
+        <ul>
+          <li>استهلاك <strong>650 ك.و.س</strong> تُحسب شرائحه تصاعدياً، فتكون قيمة الاستهلاك نحو <strong>{egp(cliff650.a)} جنيه</strong>.</li>
+          <li>استهلاك <strong>651 ك.و.س</strong> يدخل الشريحة السادسة، فيُضرب كله في سعرها: نحو <strong>{egp(cliff650.b)} جنيه</strong>.</li>
+          <li>الفرق: نحو <strong>{egp(cliff650.jump)} جنيه</strong> مقابل كيلوواط ساعة واحد.</li>
+        </ul>
+        <p>والقفزة تتكرر عند الألف: استهلاك 1000 ك.و.س يعطي نحو {egp(cliff1000.a)} جنيه، بينما 1001 ك.و.س يعطي نحو {egp(cliff1000.b)} جنيه، بفارق نحو {egp(cliff1000.jump)} جنيه.</p>
+        <p>لهذا فإن السؤال العملي لأي بيت قريب من هذه الحدود ليس «كيف أوفر بعض الكهرباء» بل <strong>«كيف أنزل تحت الحد»</strong>. الفرق بين الإجابتين مئات الجنيهات كل شهر.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:48px 24px 8px;">
+  <div style="max-width:900px;margin:0 auto;">
+    <h2 class="section-heading" style="font-size:clamp(22px,3vw,32px);margin:0 0 18px;">أين تدخل الطاقة الشمسية في هذه المعادلة</h2>
+    <div class="rich">
+      <p>في نظام يعاقب تجاوز الحدود بهذه القسوة، قيمة كل كيلوواط ساعة توفره على نفسك ليست ثابتة: الكيلوواط الذي ينزل بك من الشريحة السادسة إلى الخامسة يساوي أضعاف الكيلوواط العادي. لهذا نبدأ أي تصميم عندنا من فاتورتك الفعلية وقراءات عدادك على مدى عدة شهور، لا من مساحة السطح ولا من رقم جاهز.</p>
+      <p>المحطة المربوطة على الشبكة بعداد <a href="/blog/net-metering-egypt-2026-circular-4/">صافي القياس</a> تغطي جزءاً من استهلاكك نهاراً، فينخفض ما تسحبه من الشبكة، وقد ينخفض معه ترتيب شريحتك. أما ما تصدره للشبكة فيُشترى بسعر أقل كثيراً من سعر الشرائح العليا، وهو ما يجعل استهلاك ما تنتجه بنفسك أفضل اقتصادياً من تصديره.</p>
+      <p>الأرقام الاسترشادية لتكلفة المحطات بمختلف القدرات منشورة في صفحة <a href="/solar-prices-egypt/">أسعار الطاقة الشمسية في مصر</a>، وتفاصيل الأنظمة السكنية في صفحة <a href="/solar-systems-homes-villas/">محطات المنازل والفيلات</a>. أما الرقم الخاص ببيتك فيأتي بعد معاينة مجانية نقرأ فيها فاتورتك ونقيس السطح والحمل.</p>
+    </div>
+  </div>
+</section>
+
+<section style="padding:56px 24px;background:#EAF5FB;margin-top:40px;">
+  <div style="max-width:860px;margin:0 auto;">
+    <span class="kicker">الأسئلة الشائعة</span>
+    <h2 class="section-heading" style="font-size:clamp(24px,3.5vw,36px);margin:0 0 32px;">الأسئلة الشائعة</h2>
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      {FAQ.map((f) => (
+        <div style="background:#fff;border:1px solid #e3ded4;border-radius:8px;padding:24px 28px;">
+          <h3 style="font-family:'IBM Plex Sans Arabic', 'Noto Kufi Arabic', system-ui, sans-serif;font-size:18px;font-weight:800;color:#0A3D5C;margin:0 0 10px;">{f.q}</h3>
+          <p style="font-size:15px;line-height:1.75;color:#555;margin:0;">{f.a}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section style="background:linear-gradient(135deg, #0E4D6E 0%, #16648C 50%, #0E4D6E 100%);padding:64px 24px;text-align:center;">
+  <h2 style="font-family:'IBM Plex Sans Arabic', 'Noto Kufi Arabic', system-ui, sans-serif;font-size:clamp(26px,4vw,40px);font-weight:800;color:#fff;margin-bottom:16px;">فاتورتك مرتفعة؟ خلينا نقرأها معك.</h2>
+  <p style="font-size:16px;color:rgba(255,255,255,0.8);margin-bottom:28px;max-width:560px;margin-inline-start:auto;margin-inline-end:auto;">أرسل لنا قراءات عدادك لآخر ثلاثة شهور ونحسب لك حجم المحطة التي تنزل بك تحت الشريحة. معاينة مجانية وعرض سعر مكتوب.</p>
+  <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
+    <a href="tel:+201283355408" class="btn-cream">اتصل الآن — <bdi>+20 128 335 5408</bdi></a>
+    <a href="/#contact" class="btn-outline-white">اطلب عرض سعر</a>
+  </div>
+</section>
+
+<script type="application/json" id="tariff-data" set:html={JSON.stringify(TARIFF)} />
+<script is:inline>
+  (function () {
+    var el = document.getElementById('kwh');
+    if (!el) return;
+    var dataEl = document.getElementById('tariff-data');
+    var T = JSON.parse(dataEl.textContent);
+    var byN = {};
+    T.forEach(function (t) { byN[t.n] = t; });
+
+    // Mirrors the server-side billFor(). Rates come from the shared TARIFF table.
+    function bill(k) {
+      var r1 = byN[1].rate, r2 = byN[2].rate, r3 = byN[3].rate,
+          r4 = byN[4].rate, r5 = byN[5].rate, r6 = byN[6].rate, r7 = byN[7].rate;
+      if (k <= 0) return { total: 0, tier: 1, whole: false };
+      if (k <= 50) return { total: k * r1, tier: 1, whole: false };
+      if (k <= 100) return { total: 50 * r1 + (k - 50) * r2, tier: 2, whole: false };
+      if (k <= 200) return { total: k * r3, tier: 3, whole: false };
+      if (k <= 350) return { total: 200 * r3 + (k - 200) * r4, tier: 4, whole: false };
+      if (k <= 650) return { total: 200 * r3 + 150 * r4 + (k - 350) * r5, tier: 5, whole: false };
+      if (k <= 1000) return { total: k * r6, tier: 6, whole: true };
+      return { total: k * r7, tier: 7, whole: true };
+    }
+
+    var fmt = function (x) {
+      return (Math.round(x * 100) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+    var amountEl = document.getElementById('amount');
+    var tierEl = document.getElementById('tier');
+    var rateEl = document.getElementById('rate-line');
+    var warnEl = document.getElementById('warn');
+
+    function render() {
+      var k = parseFloat(el.value);
+      if (isNaN(k) || k < 0) {
+        amountEl.textContent = '—';
+        tierEl.textContent = '—';
+        rateEl.textContent = '';
+        warnEl.hidden = true;
+        return;
+      }
+      var res = bill(k);
+      amountEl.textContent = fmt(res.total);
+      tierEl.textContent = 'الشريحة ' + res.tier + ' — ' + byN[res.tier].label;
+      rateEl.innerHTML = res.whole
+        ? 'استهلاكك كله يُحسب بسعر <strong>' + byN[res.tier].rate + ' جنيه</strong> للكيلوواط ساعة من أول وحدة.'
+        : 'متوسط سعر الكيلوواط ساعة على فاتورتك: <strong>' + (k > 0 ? fmt(res.total / k) : '0') + ' جنيه</strong>.';
+
+      // Warn when the next cliff is close enough to matter.
+      warnEl.hidden = true;
+      if (k > 560 && k <= 650) {
+        var d = bill(651).total - res.total;
+        warnEl.innerHTML = 'أنت على بعد ' + Math.round(651 - k) + ' ك.و.س من الشريحة السادسة. تجاوزها يرفع قيمة استهلاكك بنحو <strong>' + fmt(d) + ' جنيه</strong> دفعة واحدة.';
+        warnEl.hidden = false;
+      } else if (k > 650 && k <= 1000) {
+        var save = res.total - bill(650).total;
+        warnEl.innerHTML = 'أنت داخل الشريحة السادسة، ويُحسب استهلاكك كله بسعرها. النزول تحت 650 ك.و.س يوفر نحو <strong>' + fmt(save) + ' جنيه</strong> شهرياً.';
+        warnEl.hidden = false;
+      } else if (k > 1000) {
+        var save2 = res.total - bill(1000).total;
+        warnEl.innerHTML = 'أنت في الشريحة السابعة، أعلى شريحة. النزول تحت 1000 ك.و.س وحده يوفر نحو <strong>' + fmt(save2) + ' جنيه</strong> شهرياً.';
+        warnEl.hidden = false;
+      }
+    }
+
+    el.addEventListener('input', render);
+    render();
+  })();
+</script>
+
+</Layout>
