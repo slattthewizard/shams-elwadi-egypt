@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import RelatedPosts from '../../components/RelatedPosts.astro';
 ---
 
 <Layout
@@ -40,7 +41,7 @@ import Layout from '../../layouts/Layout.astro';
       </div>
     </div>
     <div class="hero-img" style="border-radius:12px;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,0.3);">
-      <img src="/images/city-3.webp" alt="الطاقة الشمسية في البحيرة: ري ومحطات لمزارع الاستصلاح الكبرى ومخازن التبريد" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
+      <img src="/images/city-3.webp" srcset="/images/city-3-800.webp 800w, /images/city-3-1200.webp 1200w, /images/city-3.webp 1600w" sizes="(max-width: 860px) calc(100vw - 48px), 520px" alt="الطاقة الشمسية في البحيرة: ري ومحطات لمزارع الاستصلاح الكبرى ومخازن التبريد" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
     </div>
   </div>
 </section>
@@ -91,6 +92,8 @@ import Layout from '../../layouts/Layout.astro';
     <div class="rich"><p>شركة البحيرة لتوزيع الكهرباء هي المسؤولة عن تركيب عداد صافي القياس الثنائي الاتجاه في البحيرة، وتشمل إجراءات الربط تقديم ملف فني للمحطة وتسجيل عقد صيانة دورية بموجب الكتاب الدوري رقم 4 لسنة 2026. راجع <a href="/blog/net-metering-egypt-2026-circular-4/">شرح صافي القياس في مصر 2026</a> لتفاصيل الخطوات كاملة.</p><p>منذ فاتورة أغسطس 2026 صار تجاوز 650 كيلوواط ساعة في الشهر حداً حساساً: استهلاك الشهر كله حتى هذا الحد يُحسب على شرائح متدرجة، لكن أي كيلوواط ساعة إضافي فوق 650 يُعيد تسعير الاستهلاك كله من أول وحدة على سعر الشريحة الأعلى، وفوق 1000 كيلوواط ساعة تتكرر القفزة على شريحة أعلى منها. لهذا يكون الهدف عند مزارع ومنازل البحيرة القريبة من هذا الحد تصميم محطة تُنزل الاستهلاك الشهري تحت 650 لا فوقها بقليل. جرّب <a href="/electricity-bill-calculator/">حاسبة فاتورة الكهرباء وشرائح الكهرباء</a> على فاتورتك الأخيرة لمعرفة موقعك من هذا الحد.</p></div>
   </div>
 </section>
+<RelatedPosts slugs={["solar-5kw-system-cost-egypt-2026", "solar-pump-sizing-hp-panels-well-depth", "factory-150kw-solar-cost-payback", "rooftop-solar-steps-documents-egypt"]} />
+
 <section style="padding:72px 24px;background:#EAF5FB;">
   <div style="max-width:860px;margin:0 auto;">
     <span class="kicker">الأسئلة الشائعة</span>

@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import RelatedPosts from '../../components/RelatedPosts.astro';
 ---
 
 <Layout
@@ -40,7 +41,7 @@ import Layout from '../../layouts/Layout.astro';
       </div>
     </div>
     <div class="hero-img" style="border-radius:12px;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,0.3);">
-      <img src="/images/service-3.webp" alt="مضخة مياه بالطاقة الشمسية للآبار والري الزراعي" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
+      <img src="/images/service-3.webp" srcset="/images/service-3-800.webp 800w, /images/service-3-1200.webp 1200w, /images/service-3.webp 1600w" sizes="(max-width: 860px) calc(100vw - 48px), 520px" alt="مضخة مياه بالطاقة الشمسية للآبار والري الزراعي" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
     </div>
   </div>
 </section>
@@ -105,6 +106,8 @@ import Layout from '../../layouts/Layout.astro';
     <div class="rich"><p>لنعطيك عرضاً فنياً يمكن تحويله إلى أمر شراء نحتاج منك: تقرير حفر البئر إن وُجد، وقطر التغليف، والمنسوب الساكن والديناميكي أو نتيجة اختبار الضخ، وطول المواسير وقطرها حتى نقطة التسليم وفرق المنسوب، والمساحة والمحصول وطريقة الري، والمسافة بين البئر والموقع المقترح للألواح، وهل تتوفر شبكة كهرباء أو مولد ديزل بجوار البئر. إن لم تتوفر هذه البيانات نقيسها في المعاينة.</p><p>نطاق التوريد والتركيب المعتاد يشمل:</p><ul><li>المضخة والمحرك مع الكابل الغاطس وحبل التعليق وحساس المنسوب.</li><li>إنفرتر المضخة الشمسي مع صندوق توزيع تيار مستمر ومانعات صواعق وقواطع.</li><li>الألواح والهيكل المجلفن والقواعد الخرسانية والتأريض.</li><li>مواسير الطرد حتى حد التسليم المتفق عليه، وعداد تصرف عند الطلب.</li><li>التركيب والتشغيل التجريبي وقياس التصرف الفعلي، وتسليم مذكرة فنية ومخطط أحادي الخط وتقرير تشغيل.</li></ul><p>يذكر العرض ضمان كل مكون بنص وثائق المصنّع، ومدة التنفيذ التقديرية بحسب توفر المعدات وبُعد الموقع، وبند الصيانة الدورية إن رغبت في التعاقد عليه. نحن حاصلون على شهادة تأهيل هيئة الطاقة الجديدة والمتجددة، ونخدم مزارع الاستصلاح في <a href="/solar-minya/">المنيا</a> وبني سويف والوادي الجديد والنوبارية وأطراف الدلتا في <a href="/solar-sharqia/">الشرقية</a> و<a href="/solar-dakahlia/">الدقهلية</a>. اطلب عرض سعر أو احجز معاينة مجانية عبر واتساب على +201283355408، أو اتصل على <bdi>+20 128 335 5408</bdi>.</p></div>
   </div>
 </section>
+<RelatedPosts slugs={["solar-pump-sizing-hp-panels-well-depth", "solar-installments-loans-egypt", "lithium-battery-prices-egypt-2026"]} />
+
 <section style="padding:72px 24px;background:#EAF5FB;">
   <div style="max-width:860px;margin:0 auto;">
     <span class="kicker">الأسئلة الشائعة</span>

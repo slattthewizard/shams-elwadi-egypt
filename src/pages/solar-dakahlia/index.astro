@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import RelatedPosts from '../../components/RelatedPosts.astro';
 ---
 
 <Layout
@@ -40,7 +41,7 @@ import Layout from '../../layouts/Layout.astro';
       </div>
     </div>
     <div class="hero-img" style="border-radius:12px;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,0.3);">
-      <img src="/images/city-3.webp" alt="الطاقة الشمسية في الدقهلية: محطات شمسية للعمارات والمزارع والمصانع" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
+      <img src="/images/city-3.webp" srcset="/images/city-3-800.webp 800w, /images/city-3-1200.webp 1200w, /images/city-3.webp 1600w" sizes="(max-width: 860px) calc(100vw - 48px), 520px" alt="الطاقة الشمسية في الدقهلية: محطات شمسية للعمارات والمزارع والمصانع" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
     </div>
   </div>
 </section>
@@ -91,6 +92,8 @@ import Layout from '../../layouts/Layout.astro';
     <div class="rich"><p>مصانع الدقهلية في أغلبها صغيرة ومتوسطة: ورش وخطوط ألومنيوم في ميت غمر، ومضارب أرز ومصانع ألبان وأغذية في مراكز الدلتا، ومغازل ومنسوجات، ووحدات في المنطقة الصناعية بجمصة. القاسم المشترك أن الحمل نهاري في وردية أو اثنتين، وهو ما يجعل محطة أون جريد بلا بطاريات الخيار الأعلى عائدًا: ما تنتجه الألواح يُستهلك مباشرة، والفائض يُحسب عبر عداد صافي القياس.</p><p>نعد للمصنع دراسة فنية تبدأ من فواتير 12 شهرًا ومنحنى الحمل، ثم تحدد القدرة المثلى وموقع الألواح على سطح الصالة أو على مظلات مواقف السيارات، ونقطة الربط على الجهد المنخفض أو المتوسط. الشبكة في محيط المنصورة وطلخا قوية نسبيًا بوجود محطة توليد طلخا القريبة، لكن جودة الجهد في القرى وأطراف المراكز تتفاوت، ولذلك نقيس الجهد في نقطة الربط قبل اختيار الانفرتر. الشركة حاصلة على شهادة تأهيل هيئة الطاقة الجديدة والمتجددة، ونتولى المراسلات والاختبارات مع شركة التوزيع حتى تركيب العداد.</p><p>الاعتبار المحلي الذي يفوت كثيرين: الدلتا رطبة والغبار الزراعي يلتصق بالألواح، والمواقع القريبة من ساحل جمصة تتعرض لهواء مالح. لذلك نحدد ميل الألواح وجدول الغسيل ونختار هياكل تثبيت مقاومة للتآكل، ونضع ذلك في عقد الصيانة. اطلع على منهجية الدراسة في <a href="/solar-factories-hotels/">صفحة المصانع والفنادق</a> وعلى نطاقات الأسعار الموثقة من مصادر مصرية في <a href="/solar-prices-egypt/">صفحة أسعار الطاقة الشمسية في مصر</a>.</p></div>
   </div>
 </section>
+<RelatedPosts slugs={["solar-5kw-system-cost-egypt-2026", "solar-pump-sizing-hp-panels-well-depth", "factory-150kw-solar-cost-payback", "rooftop-solar-steps-documents-egypt"]} />
+
 <section style="padding:72px 24px;background:#EAF5FB;">
   <div style="max-width:860px;margin:0 auto;">
     <span class="kicker">الأسئلة الشائعة</span>

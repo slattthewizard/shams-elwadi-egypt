@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import RelatedPosts from '../../components/RelatedPosts.astro';
 ---
 
 <Layout
@@ -40,7 +41,7 @@ import Layout from '../../layouts/Layout.astro';
       </div>
     </div>
     <div class="hero-img" style="border-radius:12px;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,0.3);">
-      <img src="/images/service-4.webp" alt="نظام طاقة شمسية هجين ببطاريات ليثيوم وعقود صيانة دورية للمنازل والمنشآت" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
+      <img src="/images/service-4.webp" srcset="/images/service-4-800.webp 800w, /images/service-4-1200.webp 1200w, /images/service-4.webp 1600w" sizes="(max-width: 860px) calc(100vw - 48px), 520px" alt="نظام طاقة شمسية هجين ببطاريات ليثيوم وعقود صيانة دورية للمنازل والمنشآت" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
     </div>
   </div>
 </section>
@@ -105,6 +106,8 @@ import Layout from '../../layouts/Layout.astro';
     <div class="rich"><p>لأصحاب المصانع والفنادق ومديري المرافق، يتضمن عرضنا الفني ما يلزم لكتابة أمر شراء واضح دون بنود مفتوحة:</p><ul><li><strong>جدول كميات:</strong> عدد الألواح وقدرتها، وطراز الإنفرتر وقدرته، وعدد وحدات البطاريات وسعتها الإجمالية بالكيلوواط ساعة، وهياكل التثبيت، والكابلات بمقاطعها، ولوحات الحماية.</li><li><strong>المواصفات القياسية:</strong> ألواح مطابقة لمواصفتي IEC 61215 و IEC 61730، وإنفرتر مطابق لمواصفة IEC 62109، وبطاريات مطابقة لمواصفة IEC 62619، وتوافق الربط مع كود ربط محطات الطاقة الشمسية بالشبكة.</li><li><strong>الضمانات:</strong> ضمان أداء الألواح 25 إلى 30 عامًا، وضمان الإنفرتر 5 إلى 10 سنوات، وضمان البطاريات 10 سنوات أو 6,000 دورة أيهما أسبق، كما تنص عليه أوراق المصنّع لكل طراز.</li><li><strong>الاختبارات والتسليم:</strong> اختبار مقاومة العزل وتسلسل الأطوار، واختبار Anti-Islanding بحضور مندوب شركة التوزيع، واختبار تفريغ أولي للبطاريات، وتسليم مخططات ما بعد التنفيذ وشهادات المعدات.</li><li><strong>عقد الصيانة:</strong> نطاق الزيارات وفتراتها، وزمن الاستجابة للأعطال المتفق عليه بأيام العمل، وأسعار قطع الغيار خارج الضمان، وبيانات التسجيل على منصة PV-Hub.</li></ul><p>الشركة حاصلة على شهادة تأهيل هيئة الطاقة الجديدة والمتجددة، وهي وثيقة تطلبها شركة التوزيع ضمن ملف طلب الربط بعداد صافي القياس، ونرفقها مع العرض. نعمل من المقر الرئيسي بالقاهرة ونخدم القاهرة الكبرى ومحافظات <a href="/solar-giza/">الجيزة</a> و<a href="/solar-alexandria/">الإسكندرية</a> و<a href="/solar-dakahlia/">الدقهلية</a> و<a href="/solar-sharqia/">الشرقية</a> و<a href="/solar-minya/">المنيا</a> و<a href="/solar-red-sea/">البحر الأحمر</a>. احجز معاينة مجانية عبر واتساب +201283355408، أو اتصل على <bdi>+20 128 335 5408</bdi>، أو اطلب عرض سعر من النموذج.</p></div>
   </div>
 </section>
+<RelatedPosts slugs={["lithium-battery-prices-egypt-2026", "hybrid-vs-on-grid-after-tariff-rise-2026", "solar-5kw-system-cost-egypt-2026"]} />
+
 <section style="padding:72px 24px;background:#EAF5FB;">
   <div style="max-width:860px;margin:0 auto;">
     <span class="kicker">الأسئلة الشائعة</span>

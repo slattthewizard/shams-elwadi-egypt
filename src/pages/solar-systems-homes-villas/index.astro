@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import RelatedPosts from '../../components/RelatedPosts.astro';
 ---
 
 <Layout
@@ -40,7 +41,7 @@ import Layout from '../../layouts/Layout.astro';
       </div>
     </div>
     <div class="hero-img" style="border-radius:12px;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,0.3);">
-      <img src="/images/service-1.webp" alt="تركيب طاقة شمسية للمنازل في مصر: محطات أون جريد وهايبرد من 3 إلى 30 كيلوواط" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
+      <img src="/images/service-1.webp" srcset="/images/service-1-800.webp 800w, /images/service-1-1200.webp 1200w, /images/service-1.webp 1600w" sizes="(max-width: 860px) calc(100vw - 48px), 520px" alt="تركيب طاقة شمسية للمنازل في مصر: محطات أون جريد وهايبرد من 3 إلى 30 كيلوواط" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
     </div>
   </div>
 </section>
@@ -105,6 +106,8 @@ import Layout from '../../layouts/Layout.astro';
     <div class="rich"><p>المحطة الشمسية لا تحتوي أجزاء متحركة، لكن لها أعطالاً معروفة تظهر مع الوقت إن لم تُفحص. أكثرها شيوعاً في المناخ المصري: تراكم الغبار والرمال على الألواح وما يسببه من هبوط في الإنتاج، وارتخاء وصلات MC4 أو تآكلها فترتفع حرارتها، والنقاط الساخنة الناتجة عن ظل جزئي أو خلية معيبة، وخفض الانفرتر لقدرته تلقائياً عند ارتفاع حرارة موقعه، وتلف الكابلات المكشوفة للشمس، وضعف العزل مع الرطوبة على السواحل.</p><p>لذلك يلزم الكتاب الدوري رقم 4 لسنة 2026 كل محطة بعقد صيانة دورية مع الشركة المنفذة مسجل على منصة PV-Hub التابعة لهيئة الطاقة الجديدة والمتجددة. عقدنا يحدد المواعيد بوضوح:</p><ul><li><strong>شهرياً:</strong> مراجعة الإنتاج عبر تطبيق المراقبة ومقارنته بالمتوقع، وتنظيف الألواح بالماء والفرشاة الناعمة، وبوتيرة أعلى في مواسم الغبار.</li><li><strong>كل 6 أشهر:</strong> فحص بصري للهيكل والتثبيت والكابلات، وشد الوصلات، وتنظيف مرشحات تهوية الانفرتر.</li><li><strong>سنوياً:</strong> تصوير حراري للألواح والوصلات، واختبار مقاومة العزل، وفحص مانعات الصواعق والقواطع، ومراجعة سعة البطاريات في الأنظمة الهايبرد.</li></ul><p>تجد تفاصيل عقود الصيانة وبنوك البطاريات في صفحة <a href="/hybrid-batteries-maintenance/">الأنظمة الهايبرد والبطاريات والصيانة</a>. وإن كانت محطتك لمصنع أو فندق فراجع صفحة <a href="/solar-factories-hotels/">الطاقة الشمسية للمصانع والفنادق</a>، أما محطات المزارع فلها صفحة <a href="/solar-irrigation-pumps/">مضخات الري الشمسية</a>. اطلب عرض سعر عبر واتساب أو احجز معاينة مجانية، ويأتيك مهندس لقياس السطح والحمل قبل أي رقم.</p></div>
   </div>
 </section>
+<RelatedPosts slugs={["solar-5kw-system-cost-egypt-2026", "hybrid-vs-on-grid-after-tariff-rise-2026", "net-metering-egypt-2026-circular-4", "rooftop-solar-steps-documents-egypt", "convert-code-meter-to-legal-egypt", "solar-installments-loans-egypt"]} />
+
 <section style="padding:72px 24px;background:#EAF5FB;">
   <div style="max-width:860px;margin:0 auto;">
     <span class="kicker">الأسئلة الشائعة</span>

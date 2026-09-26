@@ -34,6 +34,7 @@ EXISTING = ["الجيزة", "الإسكندرية", "الدقهلية", "الش�
 
 # slug -> (arabic name, city image 1..6)
 NEW_GOVERNORATES = {
+    "solar-cairo":         ("القاهرة", 1),
     "solar-assiut":        ("أسيوط", 5),
     "solar-sohag":         ("سوهاج", 3),
     "solar-qena":          ("قنا", 5),
@@ -56,7 +57,8 @@ NEW_GOVERNORATES = {
     "solar-matrouh":       ("مطروح", 6),
 }
 
-ALL_AREAS = [HUB] + EXISTING + [v[0] for v in NEW_GOVERNORATES.values()]
+# dict.fromkeys drops the hub when it also has its own page (solar-cairo).
+ALL_AREAS = list(dict.fromkeys([HUB] + EXISTING + [v[0] for v in NEW_GOVERNORATES.values()]))
 
 FONT = "'IBM Plex Sans Arabic', 'Noto Kufi Arabic', system-ui, sans-serif"
 
@@ -146,8 +148,11 @@ def build(slug, city, img, d):
         for f in d["faq"]
     )
 
+    related = json.loads((COPY / "related-posts.json").read_text(encoding="utf-8")).get(slug, [])
+
     return f'''---
 import Layout from '../../layouts/Layout.astro';
+import RelatedPosts from '../../components/RelatedPosts.astro';
 ---
 
 <Layout
@@ -188,7 +193,7 @@ import Layout from '../../layouts/Layout.astro';
       </div>
     </div>
     <div class="hero-img" style="border-radius:12px;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,0.3);">
-      <img src="/images/city-{img}.webp" alt="{d["h1"]}" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
+      <img src="/images/city-{img}.webp" srcset="/images/city-{img}-800.webp 800w, /images/city-{img}-1200.webp 1200w, /images/city-{img}.webp 1600w" sizes="(max-width: 860px) calc(100vw - 48px), 520px" alt="{d["h1"]}" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
     </div>
   </div>
 </section>
@@ -207,6 +212,8 @@ import Layout from '../../layouts/Layout.astro';
 </style>
   </div></section>
 {body_sections}
+<RelatedPosts slugs={{{json.dumps(related, ensure_ascii=False)}}} />
+
 <section style="padding:72px 24px;background:#EAF5FB;">
   <div style="max-width:860px;margin:0 auto;">
     <span class="kicker">الأسئلة الشائعة</span>

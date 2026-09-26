@@ -1,4 +1,5 @@
 {
+  "trailingSlash": true,
   "redirects": [
     {
       "source": "/(.*)",
@@ -6,7 +7,9 @@
       "destination": "https://shamselwadi.com/$1",
       "statusCode": 308
     },
-    { "source": "/sitemap.xml", "destination": "/sitemap-index.xml", "statusCode": 301 }
+    { "source": "/sitemap.xml", "destination": "/sitemap-index.xml", "statusCode": 301 },
+    { "source": "/index.html", "destination": "/", "statusCode": 308 },
+    { "source": "/:path+/index.html", "destination": "/:path+/", "statusCode": 308 }
   ],
   "headers": [
     {

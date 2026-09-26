@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import RelatedPosts from '../../components/RelatedPosts.astro';
 ---
 
 <Layout
@@ -40,7 +41,7 @@ import Layout from '../../layouts/Layout.astro';
       </div>
     </div>
     <div class="hero-img" style="border-radius:12px;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,0.3);">
-      <img src="/images/city-6.webp" alt="الطاقة الشمسية لفنادق جنوب سيناء: شرم الشيخ ودهب في طريق الطاقة النظيفة 2030" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
+      <img src="/images/city-6.webp" srcset="/images/city-6-800.webp 800w, /images/city-6-1200.webp 1200w, /images/city-6.webp 1600w" sizes="(max-width: 860px) calc(100vw - 48px), 520px" alt="الطاقة الشمسية لفنادق جنوب سيناء: شرم الشيخ ودهب في طريق الطاقة النظيفة 2030" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
     </div>
   </div>
 </section>
@@ -91,6 +92,8 @@ import Layout from '../../layouts/Layout.astro';
     <div class="rich"><p>الإشعاع الشمسي في جنوب سيناء من الأعلى في مصر على مدار السنة تقريبًا، وهذا يرفع الإنتاج المتوقع من كل لوح، لكنه يرافقه هواء بحري مالح على طول الساحل من شرم الشيخ إلى دهب ونويبع، إضافة إلى غبار صحراوي دقيق ينتقل مع الرياح من الداخل الجبلي.</p><p>نختار لهذا المزيج هياكل مقاومة للتآكل الملحي، وموصلات وصناديق تجميع محكمة الغلق، وجدول تنظيف أقصر من المعتاد في المواقع الساحلية المباشرة، لأن الملح يترسب على سطح اللوح بمعدل أسرع من الغبار وحده. الحرارة العالية صيفًا تدخل أيضًا في اختيار الإنفرتر وموقع تركيبه بعيدًا عن التعرض المباشر للشمس.</p><p>بالنسبة للمنتجعات على خط الساحل مباشرة، نضيف فحصًا دوريًا للهياكل والمسامير ضد الصدأ كجزء من عقد الصيانة، لأن التآكل هنا يبدأ من نقاط التثبيت لا من سطح اللوح.</p></div>
   </div>
 </section>
+<RelatedPosts slugs={["solar-for-hotels-red-sea-2030", "hybrid-vs-on-grid-after-tariff-rise-2026", "lithium-battery-prices-egypt-2026", "rooftop-solar-steps-documents-egypt"]} />
+
 <section style="padding:72px 24px;background:#EAF5FB;">
   <div style="max-width:860px;margin:0 auto;">
     <span class="kicker">الأسئلة الشائعة</span>

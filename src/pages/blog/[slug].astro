@@ -18,6 +18,14 @@ const canonical = post.data.canonical ?? `https://shamselwadi.com/blog/${post.sl
 const heroImg = fs.existsSync(`public/images/blog/${post.slug}.webp`)
   ? `/images/blog/${post.slug}.webp`
   : null;
+// Responsive variants from scripts/image-variants.mjs; each is used only if the file exists.
+const heroVariant = (suffix) =>
+  heroImg && fs.existsSync(`public/images/blog/${post.slug}-${suffix}.webp`) ? `/images/blog/${post.slug}-${suffix}.webp` : null;
+const heroMobile = heroVariant('mobile');
+const heroSrcset = [[heroVariant('800'), 800], [heroVariant('1200'), 1200], [heroImg, 1600]]
+  .filter(([src]) => src)
+  .map(([src, w]) => `${src} ${w}w`)
+  .join(', ');
 const ogImage = post.data.ogImage
   ?? (heroImg ? `https://shamselwadi.com${heroImg}` : 'https://shamselwadi.com/images/og-image.webp');
 const title = post.data.metaTitle ?? post.data.title;
@@ -135,7 +143,10 @@ const faqSchema = faq.length > 0 ? JSON.stringify({
 <!-- HERO -->
 <section style="background:linear-gradient(135deg, #08344B 0%, #0E4D6E 60%, #08344B 100%);padding:64px 0;position:relative;overflow:hidden;">
   {heroImg && (
-    <img src={heroImg} alt="" width="1600" height="700" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="eager" fetchpriority="high" aria-hidden="true" />
+    <picture>
+      {heroMobile && <source media="(max-width: 767px)" srcset={heroMobile} width="840" height="700" />}
+      <img src={heroImg} srcset={heroSrcset} sizes="100vw" alt="" width="1600" height="700" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="eager" fetchpriority="high" aria-hidden="true" />
+    </picture>
   )}
   {heroImg && (
     <div style="position:absolute;inset:0;background:linear-gradient(100deg, rgba(8,52,75,0.92) 0%, rgba(8,52,75,0.72) 45%, rgba(8,52,75,0.45) 100%);"></div>

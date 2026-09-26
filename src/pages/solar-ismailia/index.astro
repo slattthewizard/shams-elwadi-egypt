@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import RelatedPosts from '../../components/RelatedPosts.astro';
 ---
 
 <Layout
@@ -40,7 +41,7 @@ import Layout from '../../layouts/Layout.astro';
       </div>
     </div>
     <div class="hero-img" style="border-radius:12px;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,0.3);">
-      <img src="/images/city-4.webp" alt="من بساتين المانجو إلى مدن القناة: الطاقة الشمسية في الإسماعيلية" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
+      <img src="/images/city-4.webp" srcset="/images/city-4-800.webp 800w, /images/city-4-1200.webp 1200w, /images/city-4.webp 1600w" sizes="(max-width: 860px) calc(100vw - 48px), 520px" alt="من بساتين المانجو إلى مدن القناة: الطاقة الشمسية في الإسماعيلية" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
     </div>
   </div>
 </section>
@@ -91,6 +92,8 @@ import Layout from '../../layouts/Layout.astro';
     <div class="rich"><p>شركة القناة لتوزيع الكهرباء هي المسؤولة عن الربط بعداد صافي القياس الثنائي الاتجاه في الإسماعيلية، سواء لمنزل في مدينة القناة أو لبستان على أطرافها، ضمن ملف فني للمحطة وعقد صيانة دورية مسجل بموجب الكتاب الدوري رقم 4 لسنة 2026.</p><p>زيادة فاتورة أغسطس 2026 جعلت حد 650 كيلوواط ساعة شهرياً نقطة حساسة: الاستهلاك حتى هذا الحد يُحسب على شرائح متدرجة، لكن تجاوزه يرفع سعر الوحدة على الاستهلاك كله من البداية لا على الزيادة فقط، وتتكرر القفزة فوق 1000 كيلوواط ساعة. من يقترب من هذا الحد، بيتاً كان أو محلاً صغيراً، يستفيد من تجربة <a href="/electricity-bill-calculator/">حاسبة فاتورة الكهرباء وشرائح الكهرباء</a> قبل اختيار حجم المحطة.</p></div>
   </div>
 </section>
+<RelatedPosts slugs={["solar-5kw-system-cost-egypt-2026", "factory-150kw-solar-cost-payback", "rooftop-solar-steps-documents-egypt", "convert-code-meter-to-legal-egypt"]} />
+
 <section style="padding:72px 24px;background:#EAF5FB;">
   <div style="max-width:860px;margin:0 auto;">
     <span class="kicker">الأسئلة الشائعة</span>

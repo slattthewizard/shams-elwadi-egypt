@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import RelatedPosts from '../../components/RelatedPosts.astro';
 ---
 
 <Layout
@@ -40,7 +41,7 @@ import Layout from '../../layouts/Layout.astro';
       </div>
     </div>
     <div class="hero-img" style="border-radius:12px;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,0.3);">
-      <img src="/images/city-2.webp" alt="طاقة شمسية لورش أثاث دمياط ومصانعها الساحلية" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
+      <img src="/images/city-2.webp" srcset="/images/city-2-800.webp 800w, /images/city-2-1200.webp 1200w, /images/city-2.webp 1600w" sizes="(max-width: 860px) calc(100vw - 48px), 520px" alt="طاقة شمسية لورش أثاث دمياط ومصانعها الساحلية" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
     </div>
   </div>
 </section>
@@ -91,6 +92,8 @@ import Layout from '../../layouts/Layout.astro';
     <div class="rich"><p>شركة شمال الدلتا لتوزيع الكهرباء هي المسؤولة عن تركيب عداد صافي القياس الثنائي الاتجاه للورش والمنازل في دمياط، ويشمل ملف الربط تقديماً فنياً للمحطة وتسجيل عقد صيانة دورية رسمياً بموجب الكتاب الدوري رقم 4 لسنة 2026.</p><p>بعد زيادة فاتورة أغسطس 2026 صار الفرق بين الاستهلاك عند 650 كيلوواط ساعة في الشهر أو فوقه بقليل كبيراً: حتى هذا الحد تُحسب الفاتورة على شرائح متدرجة، لكن تجاوزه يعيد تسعير كل الاستهلاك من أول وحدة على سعر الشريحة الأعلى، وتتكرر القفزة مرة أخرى فوق 1000 كيلوواط ساعة. صاحب الورشة أو المنزل القريب من هذا الحد يستفيد أكثر من تصميم محطة تُبقيه تحته لا فوقه بقليل. احسب موقعك من هذا الحد عبر <a href="/electricity-bill-calculator/">حاسبة فاتورة الكهرباء وشرائح الكهرباء</a>.</p></div>
   </div>
 </section>
+<RelatedPosts slugs={["solar-5kw-system-cost-egypt-2026", "factory-150kw-solar-cost-payback", "rooftop-solar-steps-documents-egypt", "convert-code-meter-to-legal-egypt"]} />
+
 <section style="padding:72px 24px;background:#EAF5FB;">
   <div style="max-width:860px;margin:0 auto;">
     <span class="kicker">الأسئلة الشائعة</span>

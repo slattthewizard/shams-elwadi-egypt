@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import RelatedPosts from '../../components/RelatedPosts.astro';
 ---
 
 <Layout
@@ -40,7 +41,7 @@ import Layout from '../../layouts/Layout.astro';
       </div>
     </div>
     <div class="hero-img" style="border-radius:12px;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,0.3);">
-      <img src="/images/city-3.webp" alt="الطاقة الشمسية في سوهاج: رفع مياه الترع للقصب ومحطات مصانع الكوثر والمنازل" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
+      <img src="/images/city-3.webp" srcset="/images/city-3-800.webp 800w, /images/city-3-1200.webp 1200w, /images/city-3.webp 1600w" sizes="(max-width: 860px) calc(100vw - 48px), 520px" alt="الطاقة الشمسية في سوهاج: رفع مياه الترع للقصب ومحطات مصانع الكوثر والمنازل" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
     </div>
   </div>
 </section>
@@ -91,6 +92,8 @@ import Layout from '../../layouts/Layout.astro';
     <div class="rich"><p>شركة مصر العليا لتوزيع الكهرباء هي الجهة الوحيدة المخوّلة بربط أي محطة في سوهاج بعداد صافي القياس، سواء كانت لمنزل أو لمصنع في الكوثر. إجراءاتها تشمل مراجعة شهادة تأهيل الشركة المنفذة وفحص المحطة قبل تركيب العداد ذي الاتجاهين، ونتولى هذا المسار الورقي كاملاً.</p><p>في فاتورة الكهرباء لا يوجد فرق بسيط بين استهلاك 649 كيلوواط في الشهر و651: الأول يبقى على الشرائح المتدرجة المعتادة، والثاني يُعاد حسابه بالكامل من الوحدة الأولى على سعر الشريحة الأعلى. هذه القفزة، لا الاستهلاك الإضافي نفسه، هي ما يُثقل الفاتورة. مصنع أو منزل في سوهاج يقترب من هذا الحد يحتاج نظاماً يخفض السحب من الشبكة إلى ما دون 650 بثبات، لا نظاماً يغطي نصف الاستهلاك فقط.</p><p>بدل تخمين قدرة النظام، افتح <a href="/electricity-bill-calculator/">حاسبة فاتورة الكهرباء وشرائح الكهرباء</a> وأدخل أرقام فاتورتك الأخيرة. الأسعار الاسترشادية العامة في صفحة <a href="/solar-prices-egypt/">أسعار الطاقة الشمسية في مصر</a>، لكن عرض سعر مصنع الكوثر أو منزل سوهاج لا يصدر إلا بعد زيارة الموقع.</p></div>
   </div>
 </section>
+<RelatedPosts slugs={["solar-pump-sizing-hp-panels-well-depth", "solar-5kw-system-cost-egypt-2026", "solar-installments-loans-egypt", "rooftop-solar-steps-documents-egypt"]} />
+
 <section style="padding:72px 24px;background:#EAF5FB;">
   <div style="max-width:860px;margin:0 auto;">
     <span class="kicker">الأسئلة الشائعة</span>

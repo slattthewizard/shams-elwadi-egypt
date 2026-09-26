@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import RelatedPosts from '../../components/RelatedPosts.astro';
 ---
 
 <Layout
@@ -40,7 +41,7 @@ import Layout from '../../layouts/Layout.astro';
       </div>
     </div>
     <div class="hero-img" style="border-radius:12px;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,0.3);">
-      <img src="/images/city-6.webp" alt="الطاقة الشمسية في البحر الأحمر: محطات للفنادق والمنتجعات والشاليهات من الغردقة إلى مرسى علم" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
+      <img src="/images/city-6.webp" srcset="/images/city-6-800.webp 800w, /images/city-6-1200.webp 1200w, /images/city-6.webp 1600w" sizes="(max-width: 860px) calc(100vw - 48px), 520px" alt="الطاقة الشمسية في البحر الأحمر: محطات للفنادق والمنتجعات والشاليهات من الغردقة إلى مرسى علم" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
     </div>
   </div>
 </section>
@@ -91,6 +92,8 @@ import Layout from '../../layouts/Layout.astro';
     <div class="rich"><p>السوق الثاني في المحافظة هو مالك الشاليه أو الفيلا في الغردقة والجونة وسهل حشيش وسفاجا ومرسى علم، سواء كان يسكنها طوال العام أو يقضي فيها الصيف فقط. زيادة شرائح الكهرباء في أغسطس 2026 جعلت فاتورة الصيف بالتكييف تقفز إلى الشرائح العليا، وهنا يفيد نظام <strong>أون جريد بعداد صافي القياس</strong>: المحطة تغذي المنزل نهاراً وتصدر الفائض إلى الشبكة، ويرحَّل هذا الفائض إلى الفواتير التالية وفق قواعد صافي القياس.</p><p>الربط بصافي القياس في المحافظة يتم عبر شركة القناة لتوزيع الكهرباء، ويشترط أن يكون المقاول حاصلاً على شهادة تأهيل هيئة الطاقة الجديدة والمتجددة، وهو ما نستوفيه ونساعد العميل في إجراءات طلب الربط وتركيب العداد ثنائي الاتجاه. أما في المناطق التي تتكرر فيها الانقطاعات أو في المجمعات البعيدة عن مراكز المدن، فيكون نظام الهايبرد ببطارية ليثيوم هو الأنسب لتشغيل التكييف والثلاجة والإضاءة أثناء الانقطاع من دون مولد.</p><p>لا نبيع نظاماً جاهزاً بحجم ثابت، بل نحسب الحجم من فواتير آخر 12 شهراً ومن مساحة السطح المتاحة واتجاهه ونسبة التظليل. تعرف على الأحجام الشائعة للمنازل والفيلات في صفحة <a href="/solar-systems-homes-villas/">الطاقة الشمسية للمنازل والفيلات</a>، ونطاقات الأسعار المنشورة في <a href="/solar-prices-egypt/">أسعار الطاقة الشمسية في مصر</a>.</p></div>
   </div>
 </section>
+<RelatedPosts slugs={["solar-for-hotels-red-sea-2030", "hybrid-vs-on-grid-after-tariff-rise-2026", "lithium-battery-prices-egypt-2026", "rooftop-solar-steps-documents-egypt"]} />
+
 <section style="padding:72px 24px;background:#EAF5FB;">
   <div style="max-width:860px;margin:0 auto;">
     <span class="kicker">الأسئلة الشائعة</span>

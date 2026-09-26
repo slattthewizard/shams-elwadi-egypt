@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import RelatedPosts from '../../components/RelatedPosts.astro';
 
 // ---------------------------------------------------------------------------
 // SINGLE SOURCE OF TRUTH for the tariff.
@@ -249,6 +250,8 @@ const appLd = {
     </div>
   </div>
 </section>
+
+<RelatedPosts slugs={["code-meter-bill-cost-vs-tiers", "code-meter-vs-legal-meter-egypt", "code-meter-problems-what-to-do", "convert-code-meter-to-legal-egypt", "hybrid-vs-on-grid-after-tariff-rise-2026"]} />
 
 <section style="padding:56px 24px;background:#EAF5FB;margin-top:40px;">
   <div style="max-width:860px;margin:0 auto;">

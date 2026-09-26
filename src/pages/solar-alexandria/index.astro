@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import RelatedPosts from '../../components/RelatedPosts.astro';
 ---
 
 <Layout
@@ -40,7 +41,7 @@ import Layout from '../../layouts/Layout.astro';
       </div>
     </div>
     <div class="hero-img" style="border-radius:12px;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,0.3);">
-      <img src="/images/city-2.webp" alt="الطاقة الشمسية في الإسكندرية: محطات للمنازل والفيلات والمصانع" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
+      <img src="/images/city-2.webp" srcset="/images/city-2-800.webp 800w, /images/city-2-1200.webp 1200w, /images/city-2.webp 1600w" sizes="(max-width: 860px) calc(100vw - 48px), 520px" alt="الطاقة الشمسية في الإسكندرية: محطات للمنازل والفيلات والمصانع" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
     </div>
   </div>
 </section>
@@ -91,6 +92,8 @@ import Layout from '../../layouts/Layout.astro';
     <div class="rich"><p>على بعد نحو 50 كيلومترًا غرب المدينة تقع مدينة برج العرب الصناعية، وأقرب منها مصانع العامرية في البتروكيماويات والأسمنت والغزل والنسيج والأغذية. القاسم المشترك بينها أسقف معدنية واسعة على هناجر الإنتاج والمخازن، تستوعب محطات بمئات الكيلوواط تُثبت على مرابط تمسك بالمدادات دون ثقب الغطاء المعدني. قبل التصميم نفحص قدرة المدادات على تحمل الوزن الإضافي وحمل الرياح، ونراجع منحنى الأحمال اليومي للمصنع لأن أفضل عائد يأتي عندما تتطابق ذروة الإنتاج الشمسي مع ورديات النهار.</p><p>لأصحاب المصانع ومديري الفنادق، القرار مالي قبل أن يكون فنيًا: فاتورة الشريحة الصناعية أو التجارية، وتكلفة ساعات الديزل التي ستُستبدل، وفترة الاسترداد بالسنوات. عرضنا الفني يتضمن دراسة أحمال ومعاينة للسقف وتصميمًا مبدئيًا وتقديرًا للتدفقات المتوقعة، ثم نتولى تقديم طلب الربط لشركة الإسكندرية لتوزيع الكهرباء وتركيب عداد صافي القياس. الشركة حاصلة على شهادة تأهيل هيئة الطاقة الجديدة والمتجددة، وهي الشهادة التي تطلبها جهات الربط للمحطات الموصولة بالشبكة. تفاصيل أكثر في صفحة <a href="/solar-factories-hotels/">محطات المصانع والفنادق</a>.</p><p>وفي مزارع الملك مريوط وبرج العرب وما يمتد على طريق الإسكندرية الصحراوي، تعمل معظم الآبار بمولدات ديزل يُنقل إليها الوقود بالشاحنات. نظام <a href="/solar-irrigation-pumps/">الري بالطاقة الشمسية</a> يشغّل الطلمبة الغاطسة أو السطحية مباشرة من الألواح في ساعات النهار ويخزن المياه في خزان أو حوض بدل تخزين الكهرباء في بطاريات، فيوفر ثمن الديزل وصيانة المولد معًا.</p></div>
   </div>
 </section>
+<RelatedPosts slugs={["solar-5kw-system-cost-egypt-2026", "factory-150kw-solar-cost-payback", "rooftop-solar-steps-documents-egypt", "convert-code-meter-to-legal-egypt"]} />
+
 <section style="padding:72px 24px;background:#EAF5FB;">
   <div style="max-width:860px;margin:0 auto;">
     <span class="kicker">الأسئلة الشائعة</span>

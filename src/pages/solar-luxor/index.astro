@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import RelatedPosts from '../../components/RelatedPosts.astro';
 ---
 
 <Layout
@@ -40,7 +41,7 @@ import Layout from '../../layouts/Layout.astro';
       </div>
     </div>
     <div class="hero-img" style="border-radius:12px;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,0.3);">
-      <img src="/images/city-6.webp" alt="الطاقة الشمسية في الأقصر: محطات للفنادق على حمل التكييف ومحطات للمنازل" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
+      <img src="/images/city-6.webp" srcset="/images/city-6-800.webp 800w, /images/city-6-1200.webp 1200w, /images/city-6.webp 1600w" sizes="(max-width: 860px) calc(100vw - 48px), 520px" alt="الطاقة الشمسية في الأقصر: محطات للفنادق على حمل التكييف ومحطات للمنازل" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
     </div>
   </div>
 </section>
@@ -91,6 +92,8 @@ import Layout from '../../layouts/Layout.astro';
     <div class="rich"><p>الفنادق والمنازل في الأقصر تُربط بعداد صافي القياس عبر الإجراء نفسه الذي تديره شركة مصر العليا لتوزيع الكهرباء في كل محافظات الصعيد: طلب، ثم فحص للمحطة، ثم تركيب عداد ذي اتجاهين بعد التأكد من شهادة تأهيل الشركة المنفذة. الفرق أن ملف الفندق أكبر من ملف المنزل، ونحن نجهز الاثنين.</p><p>تخيل بيتاً في الأقصر يستقبل أقارب أو ضيوفاً في موسم الذروة السياحية فيرتفع استهلاكه شهراً واحداً فوق 650 كيلوواط: الفاتورة في هذا الشهر لا تُحسب على الزيادة فقط، بل يُعاد حساب الاستهلاك كله من الوحدة الأولى بسعر الشريحة الأعلى. النتيجة فرق قد يفوق قيمة الوحدات الإضافية نفسها بكثير. الحل ليس تفادي استضافة الضيوف، بل نظام شمسي يمتص هذه الذروة الموسمية ويبقي سحب المنزل من الشبكة تحت الحد.</p><p>قبل أي رقم جرّب <a href="/electricity-bill-calculator/">حاسبة فاتورة الكهرباء وشرائح الكهرباء</a> على فاتورة المنزل، أو اطلب من إدارة الفندق آخر فاتورتين لمقارنة الموسمين. تفاصيل الربط في <a href="/blog/net-metering-egypt-2026-circular-4/">صافي القياس في مصر 2026</a>، والأسعار الاسترشادية في <a href="/solar-prices-egypt/">أسعار الطاقة الشمسية في مصر</a>؛ سعر الأقصر النهائي يُحدَّد بعد زيارة الموقع دائماً.</p></div>
   </div>
 </section>
+<RelatedPosts slugs={["solar-pump-sizing-hp-panels-well-depth", "solar-5kw-system-cost-egypt-2026", "solar-installments-loans-egypt", "rooftop-solar-steps-documents-egypt"]} />
+
 <section style="padding:72px 24px;background:#EAF5FB;">
   <div style="max-width:860px;margin:0 auto;">
     <span class="kicker">الأسئلة الشائعة</span>

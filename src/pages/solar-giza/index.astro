@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import RelatedPosts from '../../components/RelatedPosts.astro';
 ---
 
 <Layout
@@ -40,7 +41,7 @@ import Layout from '../../layouts/Layout.astro';
       </div>
     </div>
     <div class="hero-img" style="border-radius:12px;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,0.3);">
-      <img src="/images/city-1.webp" alt="الطاقة الشمسية في الجيزة: محطات للفيلات والمصانع والمزارع" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
+      <img src="/images/city-1.webp" srcset="/images/city-1-800.webp 800w, /images/city-1-1200.webp 1200w, /images/city-1.webp 1600w" sizes="(max-width: 860px) calc(100vw - 48px), 520px" alt="الطاقة الشمسية في الجيزة: محطات للفيلات والمصانع والمزارع" width="800" height="533" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" fetchpriority="high">
     </div>
   </div>
 </section>
@@ -91,6 +92,8 @@ import Layout from '../../layouts/Layout.astro';
     <div class="rich"><p>تضم مدينة 6 أكتوبر مناطق صناعية متعددة تعمل فيها مصانع الأغذية والأدوية والبلاستيك ومواد البناء وغيرها، ومعظمها يتغذى على الجهد المتوسط ويعمل ورديات نهارية طويلة. هذا التطابق بين ساعات التشغيل وساعات الشمس هو ما يجعل المحطة الشمسية مجدية للمصنع: تُستهلك الطاقة لحظة إنتاجها دون بطاريات، وتوفر أسطح الهناجر المعدنية مساحة تكفي لقدرات بعشرات أو مئات الكيلوواط في كثير من الحالات. نبني العرض على قراءة الفواتير الشهرية ومنحنى الحمل، ونحدد نسبة الإزاحة الواقعية من الشبكة ومن مولدات الديزل.</p><p>على طريق مصر-الإسكندرية الصحراوي وطريق الواحات، تعتمد المزارع على آبار عميقة تُضخ مياهها بمولدات ديزل يُنقل إليها الوقود دوريًا. المضخة الغاطسة التي تعمل مباشرة بالطاقة الشمسية عبر محول تردد تلغي هذه الحلقة: تضخ المياه نهارًا إلى حوض أو خزان تجميع، ويُروى منه على مدار اليوم دون حاجة إلى بطاريات. يعتمد التصميم على عمق البئر ومعدل التدفق المطلوب ومساحة الأرض المزروعة ونظام الري المستخدم.</p><p>راجع صفحة <a href="/solar-factories-hotels/">الطاقة الشمسية للمصانع والفنادق</a> لمسار إعداد العرض الفني وربط المحطة بالشبكة، وصفحة <a href="/solar-irrigation-pumps/">مضخات الري الشمسية</a> لحسابات الضخ وأنواع المضخات.</p></div>
   </div>
 </section>
+<RelatedPosts slugs={["solar-5kw-system-cost-egypt-2026", "factory-150kw-solar-cost-payback", "rooftop-solar-steps-documents-egypt", "convert-code-meter-to-legal-egypt"]} />
+
 <section style="padding:72px 24px;background:#EAF5FB;">
   <div style="max-width:860px;margin:0 auto;">
     <span class="kicker">الأسئلة الشائعة</span>
