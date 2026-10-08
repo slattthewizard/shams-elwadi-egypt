@@ -76,7 +76,8 @@
   },
   {
     "draft": "drafts/tariff-cliff-650-1000-kwh-2026-10-07.md",
-    "published": false
+    "published": true,
+    "publishedAt": "2026-10-08T20:32:46.149869Z"
   },
   {
     "draft": "drafts/card-meter-charge-kwh-per-pound-2026-10-07.md",
