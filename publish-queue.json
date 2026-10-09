@@ -81,7 +81,8 @@
   },
   {
     "draft": "drafts/card-meter-charge-kwh-per-pound-2026-10-07.md",
-    "published": false
+    "published": true,
+    "publishedAt": "2026-10-09T20:01:05.624854Z"
   },
   {
     "draft": "drafts/read-electricity-meter-consumption-2026-10-07.md",
