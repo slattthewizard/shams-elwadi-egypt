@@ -121,7 +121,8 @@
   },
   {
     "draft": "drafts/appliance-power-consumption-table-2026-10-07.md",
-    "published": false
+    "published": true,
+    "publishedAt": "2026-10-17T17:47:21.748864Z"
   },
   {
     "draft": "drafts/generator-vs-solar-home-2026-10-07.md",
