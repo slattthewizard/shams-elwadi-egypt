@@ -231,7 +231,8 @@
   },
   {
     "draft": "drafts/solar-irrigation-cost-per-feddan-2026-10-07.md",
-    "published": false
+    "published": true,
+    "publishedAt": "2026-11-08T19:23:46.234760Z"
   },
   {
     "draft": "drafts/electric-water-heater-consumption-solar-2026-10-07.md",
