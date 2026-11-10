@@ -241,7 +241,8 @@
   },
   {
     "draft": "drafts/apartment-building-rooftop-solar-2026-10-07.md",
-    "published": false
+    "published": true,
+    "publishedAt": "2026-11-10T21:13:16.939463Z"
   },
   {
     "draft": "drafts/solar-inverter-types-on-off-hybrid-2026-10-07.md",
