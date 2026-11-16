@@ -271,7 +271,8 @@
   },
   {
     "draft": "drafts/artesian-well-drilling-cost-solar-2026-10-07.md",
-    "published": false
+    "published": true,
+    "publishedAt": "2026-11-16T23:39:48.079551Z"
   },
   {
     "draft": "drafts/convert-existing-pump-to-solar-2026-10-07.md",
