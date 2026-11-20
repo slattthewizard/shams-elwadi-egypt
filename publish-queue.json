@@ -291,7 +291,8 @@
   },
   {
     "draft": "drafts/solar-output-summer-winter-egypt-2026-10-07.md",
-    "published": false
+    "published": true,
+    "publishedAt": "2026-11-20T22:09:25.803755Z"
   },
   {
     "draft": "drafts/solar-panel-tilt-angle-egypt-2026-10-07.md",
