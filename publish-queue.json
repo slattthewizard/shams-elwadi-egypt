@@ -296,7 +296,8 @@
   },
   {
     "draft": "drafts/solar-panel-tilt-angle-egypt-2026-10-07.md",
-    "published": false
+    "published": true,
+    "publishedAt": "2026-11-21T20:48:18.657246Z"
   },
   {
     "draft": "drafts/mppt-vs-pwm-charge-controller-2026-10-07.md",
